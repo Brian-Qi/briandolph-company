@@ -2,7 +2,7 @@
 export default {
   name: '杭州市拱墅区彼岸时墟游戏工作室',
   short: '彼岸时墟',
-  en: 'BianShixu Game Studio',
+  en: 'Lycoris Null',
   tagline: '游戏开发 · 数字内容 · 软件与数据',
 
   type: '个体工商户',

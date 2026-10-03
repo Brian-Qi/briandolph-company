@@ -3,7 +3,7 @@
     <div class="wrap">
       <div class="foot-grid">
         <div>
-          <h4>彼岸时墟游戏工作室</h4>
+          <h4 class="foot-brand"><img src="/logo.png" alt="" class="foot-logo" width="30" height="30" />彼岸时墟游戏工作室</h4>
           <p class="foot-desc">游戏开发 · 数字内容 · 软件与数据<br />杭州市拱墅区 · 个体工商户（存续）</p>
           <div class="foot-links">
             <a href="/self/">个人网站 ↗</a>
@@ -25,7 +25,7 @@
       </div>
       <div class="foot-copy">
         <span>© 2026 杭州市拱墅区彼岸时墟游戏工作室</span>
-        <span>彼岸时墟 · BianShixu Game Studio</span>
+        <span>彼岸时墟 · Lycoris Null</span>
       </div>
     </div>
   </footer>

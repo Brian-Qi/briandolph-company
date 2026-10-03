@@ -75,7 +75,7 @@ h2.blk-title { font-size: 30px; margin: 12px 0 8px; font-weight: 700; color: var
 .site-head::after { content: ""; display: block; height: 1px; background: var(--grad-line); opacity: .55; }
 .nav { display: flex; align-items: center; height: 72px; gap: 40px; }
 .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; letter-spacing: .02em; color: var(--ink); }
-.mark { width: 26px; height: 26px; display: grid; place-items: center; font-size: 13px; font-weight: 700; color: #0e1420; background: var(--grad); }
+.mark { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; display: block; flex: none; }
 .menu { display: flex; gap: 30px; margin: 0 0 0 auto; padding: 0; list-style: none; color: var(--ink2); font-size: 15px; }
 .menu a { color: var(--ink2); }
 .menu a:hover { color: var(--ink); }
@@ -211,6 +211,8 @@ h2.blk-title { font-size: 30px; margin: 12px 0 8px; font-weight: 700; color: var
 .site-foot::before { content: ""; display: block; height: 1px; background: var(--grad-line); opacity: .4; margin-top: -52px; margin-bottom: 52px; }
 .foot-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 40px; }
 .foot-grid h4 { color: var(--ink); font-size: 14px; margin: 0 0 14px; letter-spacing: .04em; }
+.foot-brand { display: flex; align-items: center; gap: 10px; }
+.foot-logo { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; flex: none; }
 .foot-desc { margin: 0; color: var(--ink2); }
 .foot-links { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
 .foot-links a { color: var(--accent); font-size: 14px; }
