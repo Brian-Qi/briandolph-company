@@ -1,0 +1,12 @@
+node_modules
+dist
+.DS_Store
+*.local
+.vite
+
+# 本地生成物 / 派生物（不随源码提交）
+_backup_*/
+_design/
+_hero_gen/
+public/arg_01/
+public/personal/
