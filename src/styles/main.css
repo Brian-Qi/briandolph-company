@@ -91,17 +91,25 @@ h2.blk-title { font-size: 30px; margin: 12px 0 8px; font-weight: 700; color: var
 
 /* hero 样式见 components/HeroCarousel.vue（组件内 scoped） */
 
-/* page head (sub pages) */
+/* page head (sub pages) — 标题左 / 副标题右 两栏，避免左侧孤岛割裂 */
 .page-head {
-  padding: 60px 0 0;
+  padding: 52px 0 0;
   background:
-    radial-gradient(680px 360px at 92% -20%, rgba(89,211,180,.12), transparent 70%),
-    radial-gradient(520px 320px at 4% -30%, rgba(159,130,253,.14), transparent 72%),
-    var(--bg2);
+    radial-gradient(720px 340px at 92% -20%, rgba(89,211,180,.10), transparent 70%),
+    radial-gradient(560px 320px at 2% -30%, rgba(159,130,253,.13), transparent 72%),
+    var(--bg);
 }
-.page-head::after { content: ""; display: block; height: 1px; margin-top: 44px; background: var(--grad-line); opacity: .55; }
-.page-head h1 { font-size: 36px; margin: 12px 0 8px; font-weight: 700; color: var(--ink); }
-.page-head .sub { color: var(--ink2); margin: 0; max-width: 720px; }
+.page-head .wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-areas: "k k" "title sub";
+  align-items: end;
+  column-gap: 56px;
+}
+.page-head .k { grid-area: k; }
+.page-head h1 { grid-area: title; font-size: 40px; line-height: 1.18; margin: 12px 0 0; font-weight: 700; color: var(--ink); }
+.page-head .sub { grid-area: sub; color: var(--muted); font-size: 16.5px; margin: 0 0 6px; max-width: none; }
+.page-head::after { content: ""; display: block; height: 1px; margin-top: 40px; background: var(--grad-line); opacity: .4; }
 
 /* sections */
 .blk { padding: 72px 0; border-bottom: 1px solid var(--line); }
@@ -232,4 +240,7 @@ h2.blk-title { font-size: 30px; margin: 12px 0 8px; font-weight: 700; color: var
   .shots { grid-template-columns: 1fr 1fr; }
   .case .side { border-left: 0; border-top: 1px solid var(--line); }
   .info-table th { width: 130px; }
+  .page-head .wrap { grid-template-columns: 1fr; grid-template-areas: "k" "title" "sub"; column-gap: 0; row-gap: 10px; align-items: start; }
+  .page-head h1 { margin-top: 0; }
+  .page-head .sub { margin: 0; }
 }
