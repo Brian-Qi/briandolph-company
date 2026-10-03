@@ -53,7 +53,8 @@ npm run preview    # 本地预览 dist/
 |------|------|--------|------|
 | `/` | 公司站（本仓库） | `briandolph_company` | `/` |
 | `/self/` | 个人网站 | `F:\VUE\briandolph_test`（Vue CLI） | `/self/` |
-| `/arg_01/` | ARG《第五张财签》 | `F:\ARG_test\test_02`（Vite） | `/arg_01/` |
+| `/arg_01/` | ARG 第一部《第五张财签》 | `F:\ARG_test\arg_01`（Vite） | `/arg_01/` |
+| `/arg_02/` | ARG 第二部《夜航船》 | `F:\ARG_test\arg_02`（Vite） | `/arg_02/` |
 
 > 本仓库 `public/arg_01/`、`public/self/` 只是**本地预览用**的构建产物副本；线上各自由独立流程部署，互不覆盖。
 
