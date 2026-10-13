@@ -3,6 +3,8 @@ dist
 .DS_Store
 *.local
 .vite
+*.log
+*.tgz
 
 # 本地生成物 / 派生物（不随源码提交）
 _backup_*/

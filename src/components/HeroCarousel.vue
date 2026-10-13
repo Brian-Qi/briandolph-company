@@ -15,34 +15,21 @@
       <div class="track" :style="{ transform: 'translateX(-' + index * 100 + '%)' }">
         <article
           v-for="(s, i) in slides"
-          :key="s.img"
+          :key="s.tab"
           class="slide"
           :aria-hidden="i !== index"
           :inert="i !== index"
         >
-          <img
-            :src="s.img"
-            :alt="s.alt"
-            :loading="i === 0 ? 'eager' : 'lazy'"
-            :fetchpriority="i === 0 ? 'high' : 'auto'"
-            decoding="async"
-            :class="{ on: i === index }"
-          />
-          <span class="tint" aria-hidden="true"></span>
-          <span class="scrim" aria-hidden="true"></span>
-
-          <div class="copy">
-            <div class="wrap">
-              <div class="lead">
-                <p class="eyebrow">{{ s.eyebrow }}</p>
-                <component :is="i === index ? 'h1' : 'p'" class="title">{{ s.title }}</component>
-                <p class="sub">{{ s.sub }}</p>
-                <div class="btns">
-                  <RouterLink class="btn primary" :to="s.to">{{ s.cta }}</RouterLink>
-                  <RouterLink class="btn ghost" :to="s.to2">{{ s.cta2 }}</RouterLink>
-                </div>
+          <div class="wrap slide-inner">
+            <div class="copy-block">
+              <component :is="i === index ? 'h1' : 'p'" class="title">{{ s.title }}</component>
+              <p class="sub">{{ s.sub }}</p>
+              <div class="btns">
+                <RouterLink class="btn primary" :to="s.to">{{ s.cta }}</RouterLink>
+                <RouterLink class="btn ghost" :to="s.to2">{{ s.cta2 }}</RouterLink>
               </div>
             </div>
+            <div class="index" aria-hidden="true">{{ String(i + 1).padStart(2, '0') }}</div>
           </div>
         </article>
       </div>
@@ -85,8 +72,6 @@ const slides = [
     sub: '杭州的独立数字内容工作室——策划、设计、开发、上线，一支团队全程自研。',
     cta: '查看代表案例', to: '/works',
     cta2: '联系我们', to2: '/contact',
-    img: '/hero/slide-1.webp',
-    alt: '游戏与数字内容开发',
     tab: '关于我们'
   },
   {
@@ -95,8 +80,6 @@ const slides = [
     sub: '一支团队从需求走到上线，不外包、不转包，交付可用、可维护。',
     cta: '了解合作流程', to: '/services',
     cta2: '联系我们', to2: '/contact',
-    img: '/hero/slide-2.webp',
-    alt: '交付与协作',
     tab: '我们的坚持'
   },
   {
@@ -105,8 +88,6 @@ const slides = [
     sub: '面向游戏、展示与仿真场景的 VR 与数字孪生内容制作。',
     cta: '了解能力', to: '/services',
     cta2: '联系我们', to2: '/contact',
-    img: '/hero/slide-3.webp',
-    alt: 'VR 与数字孪生',
     tab: '前沿方向'
   }
 ]
@@ -147,10 +128,11 @@ onBeforeUnmount(() => {
 <style scoped>
 .hero {
   position: relative;
-  height: clamp(620px, 86vh, 900px);
+  height: calc(100dvh - 72px);
+  min-height: 560px;
   overflow: hidden;
-  background: #0a0f17;
-  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+  border-bottom: 1px solid var(--divider);
 }
 
 .viewport { position: absolute; inset: 0; overflow: hidden; }
@@ -165,124 +147,96 @@ onBeforeUnmount(() => {
   position: relative;
   flex: 0 0 100%;
   min-width: 100%;
-  overflow: hidden;
   display: flex;
   align-items: center;
 }
-.slide img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  transform: scale(1.04);
-}
-.slide img.on { animation: ken 9s ease-out both; }
-.hero.is-paused .slide img.on { animation-play-state: paused; }
-@keyframes ken { from { transform: scale(1.04); } to { transform: scale(1.1); } }
-
-/* 极光着色：左上紫、右下青，screen 叠加让冷调回温 */
-.tint {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  mix-blend-mode: screen;
-  opacity: 0.5;
-  background:
-    radial-gradient(58% 80% at 14% 20%, rgba(159, 130, 253, 0.55), transparent 60%),
-    radial-gradient(66% 86% at 86% 80%, rgba(89, 211, 180, 0.45), transparent 62%);
-}
-
-.scrim {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(90deg, rgba(8, 10, 22, 0.94) 0%, rgba(8, 10, 22, 0.7) 32%, rgba(8, 10, 22, 0.16) 64%, rgba(8, 10, 22, 0) 100%),
-    linear-gradient(0deg, rgba(8, 10, 22, 0.92) 0%, rgba(8, 10, 22, 0.34) 28%, rgba(8, 10, 22, 0) 56%);
-}
-
-.copy {
-  position: relative;
-  z-index: 2;
-  width: 100%;
+.slide-inner {
   display: flex;
   align-items: center;
-  padding-bottom: 60px;
+  justify-content: space-between;
+  gap: 40px;
+  width: 100%;
 }
-.copy .wrap { width: 100%; }
-.lead { max-width: 940px; }
+.slide:nth-child(even) .slide-inner { flex-direction: row-reverse; }
+.copy-block { max-width: 760px; }
+.index {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(120px, 16vw, 260px);
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(128, 132, 142, 0.38);
+  user-select: none;
+  flex: none;
+}
+
 .eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  margin: 0 0 18px;
+  margin: 0 0 22px;
   color: var(--accent);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.24em;
 }
-.eyebrow::before {
-  content: "";
-  width: 30px;
-  height: 2px;
-  background: linear-gradient(90deg, #9f82fd, #59d3b4);
-}
+.eyebrow::before { content: ""; width: 30px; height: 2px; background: var(--accent); }
+
 .title {
   margin: 0;
-  color: #fff;
-  font-size: clamp(34px, 4.4vw, 62px);
-  line-height: 1.1;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  text-shadow: 0 3px 40px rgba(0, 0, 0, 0.55);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(40px, 5.2vw, 120px);
+  line-height: 1.04;
+  font-weight: 900;
+  letter-spacing: -0.03em;
 }
 .sub {
-  margin: 22px 0 0;
-  color: #d3d9e6;
+  margin: 26px 0 0;
+  color: var(--ink2);
   font-size: 18px;
   line-height: 1.75;
-  max-width: 30em;
-  text-shadow: 0 1px 18px rgba(0, 0, 0, 0.6);
+  max-width: 34em;
 }
-.btns { display: flex; gap: 14px; margin-top: 38px; flex-wrap: wrap; }
+.btns { display: flex; gap: 14px; margin-top: 40px; flex-wrap: wrap; }
 
-/* 左右两侧箭头 */
+/* 两侧箭头 */
 .side {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   z-index: 4;
-  width: 54px;
-  height: 54px;
-  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius);
   display: grid;
   place-items: center;
-  font-size: 20px;
-  color: #fff;
-  background: rgba(11, 14, 24, 0.42);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-size: 18px;
+  color: var(--ink2);
+  background: var(--surface-2);
+  border: 0;
   cursor: pointer;
-  transition: background 0.22s ease, border-color 0.22s ease, color 0.22s ease;
+  transition: background .26s var(--ease), color .26s var(--ease);
 }
-.side:hover { background: var(--grad); color: var(--on-accent); border-color: transparent; }
+.side:hover { color: var(--on-accent); background: var(--accent); }
 .side.prev { left: 30px; }
 .side.next { right: 30px; }
 
-/* 居中圆点（热区 ≥ 24px） */
+/* 线段式指示器 */
 .dots {
   position: absolute;
   left: 50%;
-  bottom: 26px;
+  bottom: 30px;
   transform: translateX(-50%);
   z-index: 3;
   display: flex;
   align-items: center;
+  gap: 8px;
 }
 .dot {
   position: relative;
-  width: 26px;
+  width: 36px;
   height: 24px;
   padding: 0;
   border: 0;
@@ -295,51 +249,47 @@ onBeforeUnmount(() => {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.4);
-  transition: width 0.3s ease, background 0.3s ease;
+  width: 32px;
+  height: 2px;
+  background: rgba(128, 132, 142, 0.35);
+  transition: background 0.3s ease;
 }
-.dot:hover::after { background: rgba(255, 255, 255, 0.72); }
-.dot.on::after { width: 24px; background: var(--grad); }
+.dot:hover::after { background: rgba(128, 132, 142, 0.65); }
+.dot.on::after { background: var(--accent); }
 
-/* 暂停 / 播放 */
+/* 暂停 */
 .pause {
   position: absolute;
   right: 30px;
-  bottom: 20px;
+  bottom: 24px;
   z-index: 4;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius);
   display: grid;
   place-items: center;
-  font-size: 13px;
-  color: #fff;
-  background: rgba(11, 14, 24, 0.42);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-size: 12px;
+  color: var(--ink2);
+  background: var(--surface-2);
+  border: 0;
   cursor: pointer;
-  transition: background 0.22s ease, border-color 0.22s ease, color 0.22s ease;
+  transition: background .26s var(--ease), color .26s var(--ease), transform .32s var(--ease);
 }
-.pause:hover { background: var(--grad); color: var(--on-accent); border-color: transparent; }
+.pause:hover { color: var(--on-accent); background: var(--accent); transform: translateY(-2px); }
 
 @media (prefers-reduced-motion: reduce) {
   .track { transition: none; }
-  .slide img.on { animation: none; }
 }
 
 @media (max-width: 900px) {
-  .hero { height: clamp(520px, 82vh, 680px); }
-  .slide img { object-position: 68% center; }
-  .copy { padding-bottom: 92px; }
-  .lead { max-width: none; }
-  .title { font-size: clamp(28px, 8vw, 40px); }
-  .sub { font-size: 15.5px; margin-top: 16px; }
-  .btns { margin-top: 26px; }
-  .scrim { background: linear-gradient(0deg, rgba(8,10,22,.95) 0%, rgba(8,10,22,.7) 44%, rgba(8,10,22,.38) 100%); }
+  .hero { height: calc(100dvh - 72px); min-height: 480px; }
+  .index { display: none; }
+  .copy-block { max-width: none; }
+  .title { font-size: clamp(30px, 8.4vw, 46px); }
+  .sub { font-size: 15.5px; margin-top: 18px; }
+  .btns { margin-top: 28px; }
   .side { display: none; }
-  .pause { right: 20px; bottom: 16px; }
-  .dots { bottom: 20px; }
+  .pause { right: 20px; bottom: 18px; }
+  .dots { bottom: 22px; }
 }
 </style>

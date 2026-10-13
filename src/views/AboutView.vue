@@ -1,7 +1,6 @@
 <template>
   <div class="page-head">
     <div class="wrap">
-      <div class="k">About</div>
       <h1>关于我们</h1>
       <p class="sub">{{ co.en }} · 一家专注游戏、数字内容与软件的交付型技术工作室。</p>
     </div>
@@ -23,7 +22,7 @@
 
   <section class="blk">
     <div class="wrap">
-      <h2 class="blk-title">负责人</h2>
+      <h2 class="blk-title">团队</h2>
       <div class="cards">
         <div class="card">
           <h3>{{ co.operator }}</h3>

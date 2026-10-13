@@ -22,20 +22,56 @@
           </RouterLink>
         </li>
         <li class="menu-cta">
-          <RouterLink class="cta" to="/contact" @click="open = false">联系我们</RouterLink>
+          <button class="theme-switch" type="button" :class="{ 'is-light': isLight }" :aria-pressed="String(isLight)" :aria-label="isLight ? '切换到深色' : '切换到浅色'" @click="applyTheme(isLight ? 'dark' : 'light', $event)">
+            <span class="knob">
+              <svg v-if="isLight" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+              <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+            </span>
+          </button>
         </li>
       </ul>
 
-      <RouterLink class="cta top-cta" to="/contact">联系我们</RouterLink>
+      <button class="theme-switch top-cta" type="button" :class="{ 'is-light': isLight }" :aria-pressed="String(isLight)" :aria-label="isLight ? '切换到深色' : '切换到浅色'" @click="applyTheme(isLight ? 'dark' : 'light', $event)">
+        <span class="knob">
+          <svg v-if="isLight" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+          <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        </span>
+      </button>
     </div>
   </header>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 const route = useRoute()
 const open = ref(false)
+const isLight = ref(false)
+onMounted(() => { isLight.value = document.documentElement.getAttribute('data-theme') === 'light' })
+function applyTheme(t, e) {
+  if ((t === 'light') === isLight.value) return
+  const el = e && e.currentTarget ? e.currentTarget : null
+  const rect = el ? el.getBoundingClientRect() : null
+  const x = rect ? rect.left + rect.width / 2 : window.innerWidth - 40
+  const y = rect ? rect.top + rect.height / 2 : 40
+  const commit = () => {
+    isLight.value = t === 'light'
+    if (t === 'light') document.documentElement.setAttribute('data-theme', 'light')
+    else document.documentElement.removeAttribute('data-theme')
+    try { localStorage.setItem('theme', t) } catch (err) {}
+  }
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const root = document.documentElement
+  if (!reduce && typeof document.startViewTransition === 'function') {
+    root.style.setProperty('--tx', x + 'px')
+    root.style.setProperty('--ty', y + 'px')
+    root.classList.add('vt-theme')
+    const vt = document.startViewTransition(async () => { commit(); await nextTick() })
+    vt.finished.finally(() => root.classList.remove('vt-theme'))
+  } else {
+    commit()
+  }
+}
 const nav = [
   { to: '/', label: '首页' },
   { to: '/about', label: '关于我们' },

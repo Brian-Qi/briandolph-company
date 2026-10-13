@@ -1,7 +1,6 @@
 <template>
   <div class="page-head">
     <div class="wrap">
-      <div class="k">Contact</div>
       <h1>联系我们</h1>
       <p class="sub">无论是新项目立项还是合作洽谈，欢迎直接联系我们，24 小时内响应。</p>
     </div>
@@ -37,17 +36,8 @@
 
   <section class="blk">
     <div class="wrap">
-      <h2 class="blk-title">地址与登记</h2>
-      <table class="info-table">
-        <tbody>
-          <tr><th>经营场所</th><td>{{ co.address }}</td></tr>
-          <tr><th>主体名称</th><td>{{ co.name }}</td></tr>
-          <tr><th>经营者</th><td>{{ co.operator }}</td></tr>
-          <tr><th>统一社会信用代码</th><td class="mono">{{ co.creditCode }}</td></tr>
-          <tr><th>登记状态</th><td class="status">{{ co.status }}</td></tr>
-        </tbody>
-      </table>
-      <p class="note">以上登记信息以市场监督管理部门公示为准；如需加盖公章的合作文件，请通过邮箱联系。</p>
+      <h2 class="blk-title">地址</h2>
+      <p class="lead">{{ co.address }}（工商登记经营场所）</p>
       <div class="btns">
         <a class="btn primary" :href="'mailto:' + co.email">发送邮件</a>
         <RouterLink class="btn ghost" to="/works">先看案例</RouterLink>
