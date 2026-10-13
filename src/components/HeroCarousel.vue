@@ -2,6 +2,7 @@
   <section
     class="hero"
     :class="{ 'is-paused': paused }"
+    :style="{ '--bgp': bgPos }"
     aria-roledescription="轮播"
     aria-label="工作室简介"
     @mouseenter="hoverPaused = true"
@@ -12,41 +13,45 @@
     @touchend.passive="onTouchEnd"
   >
     <div class="viewport">
-      <div class="track" :style="{ transform: 'translateX(-' + index * 100 + '%)' }">
+      <div
+        class="track"
+        :class="{ 'no-anim': !anim }"
+        :style="{ transform: 'translateX(-' + pos * 100 + '%)' }"
+      >
         <article
-          v-for="(s, i) in slides"
-          :key="s.tab"
+          v-for="(it, i) in loop"
+          :key="i"
           class="slide"
-          :aria-hidden="i !== index"
-          :inert="i !== index"
+          :aria-hidden="i !== pos"
+          :inert="i !== pos"
         >
           <div class="wrap slide-inner">
             <div class="copy-block">
-              <component :is="i === index ? 'h1' : 'p'" class="title">{{ s.title }}</component>
-              <p class="sub">{{ s.sub }}</p>
+              <component :is="i === pos ? 'h1' : 'p'" class="title">{{ it.s.title }}</component>
+              <p class="sub">{{ it.s.sub }}</p>
               <div class="btns">
-                <RouterLink class="btn primary" :to="s.to">{{ s.cta }}</RouterLink>
-                <RouterLink class="btn ghost" :to="s.to2">{{ s.cta2 }}</RouterLink>
+                <RouterLink class="btn primary" :to="it.s.to">{{ it.s.cta }}</RouterLink>
+                <RouterLink class="btn ghost" :to="it.s.to2">{{ it.s.cta2 }}</RouterLink>
               </div>
             </div>
-            <div class="index" aria-hidden="true">{{ String(i + 1).padStart(2, '0') }}</div>
+            <div class="index" aria-hidden="true">{{ String(it.real + 1).padStart(2, '0') }}</div>
           </div>
         </article>
       </div>
     </div>
 
-    <button class="side prev" aria-label="上一张" @click="go(index - 1)">←</button>
-    <button class="side next" aria-label="下一张" @click="go(index + 1)">→</button>
+    <button class="side prev" aria-label="上一张" @click="advance(-1)">←</button>
+    <button class="side next" aria-label="下一张" @click="advance(1)">→</button>
 
     <div class="dots">
       <button
         v-for="(s, i) in slides"
         :key="s.tab"
         class="dot"
-        :class="{ on: i === index }"
+        :class="{ on: i === current }"
         :aria-label="'第 ' + (i + 1) + ' 张：' + s.tab"
-        :aria-current="i === index ? 'true' : 'false'"
-        @click="go(i)"
+        :aria-current="i === current ? 'true' : 'false'"
+        @click="goTo(i)"
       ></button>
     </div>
 
@@ -67,7 +72,6 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 
 const slides = [
   {
-    eyebrow: '独立数字内容工作室',
     title: '把想法，做成能上线的产品。',
     sub: '杭州的独立数字内容工作室——策划、设计、开发、上线，一支团队全程自研。',
     cta: '查看代表案例', to: '/works',
@@ -75,7 +79,6 @@ const slides = [
     tab: '关于我们'
   },
   {
-    eyebrow: '我们的坚持',
     title: '小而完整，全程负责。',
     sub: '一支团队从需求走到上线，不外包、不转包，交付可用、可维护。',
     cta: '了解合作流程', to: '/services',
@@ -83,7 +86,6 @@ const slides = [
     tab: '我们的坚持'
   },
   {
-    eyebrow: '前沿方向',
     title: '把现实搬进可交互的数字孪生。',
     sub: '面向游戏、展示与仿真场景的 VR 与数字孪生内容制作。',
     cta: '了解能力', to: '/services',
@@ -91,32 +93,71 @@ const slides = [
     tab: '前沿方向'
   }
 ]
+const n = slides.length
 
-const index = ref(0)
+// 首尾各克隆一张 → 循环时同方向无缝
+const loop = [
+  { s: slides[n - 1], real: n - 1 },
+  ...slides.map((s, i) => ({ s, real: i })),
+  { s: slides[0], real: 0 }
+]
+const L = loop.length
+const pos = ref(1)            // loop 中的位置
+const anim = ref(true)
+const bgPos = ref(0)          // 背景单调计数（永不回绕）
+const current = computed(() => ((pos.value - 1) % n + n) % n)
+
 const hoverPaused = ref(false)
 const userPaused = ref(false)
 const paused = computed(() => hoverPaused.value || userPaused.value)
+
+let busy = false
 let timer = null
 
-function go(i) {
-  index.value = (i + slides.length) % slides.length
+function snapTo(target) {
+  anim.value = false
+  pos.value = target
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => { anim.value = true; busy = false })
+  })
+}
+
+function advance(dir) {
+  if (busy) return
+  busy = true
+  anim.value = true
+  bgPos.value += dir
+  pos.value += dir
+  const target = pos.value
+  setTimeout(() => {
+    if (target >= L - 1) snapTo(1)
+    else if (target <= 0) snapTo(L - 2)
+    else busy = false
+  }, 1000)
+}
+
+function goTo(i) {
+  if (busy || i === current.value) return
+  bgPos.value += i - current.value
+  anim.value = true
+  pos.value = i + 1
 }
 
 function onKey(e) {
-  if (e.key === 'ArrowLeft') go(index.value - 1)
-  else if (e.key === 'ArrowRight') go(index.value + 1)
+  if (e.key === 'ArrowLeft') advance(-1)
+  else if (e.key === 'ArrowRight') advance(1)
 }
 
 let sx = 0
 function onTouchStart(e) { sx = e.changedTouches[0].clientX }
 function onTouchEnd(e) {
   const dx = e.changedTouches[0].clientX - sx
-  if (Math.abs(dx) > 45) go(index.value + (dx < 0 ? 1 : -1))
+  if (Math.abs(dx) > 45) advance(dx < 0 ? 1 : -1)
 }
 
 onMounted(() => {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  if (!reduce) timer = setInterval(() => { if (!paused.value) go(index.value + 1) }, 7000)
+  if (!reduce) timer = setInterval(() => { if (!paused.value) advance(1) }, 7000)
   window.addEventListener('keydown', onKey)
 })
 onBeforeUnmount(() => {
@@ -134,6 +175,24 @@ onBeforeUnmount(() => {
   background: var(--bg);
   border-bottom: 1px solid var(--divider);
 }
+/* 电路板纹路：SVG 作遮罩、以主题色低透明铺底（昼夜自适应），水平无缝平铺；随轮播更慢平移→景深 */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--accent);
+  opacity: .08;
+  -webkit-mask-image: url(/hero/circuit.svg);
+  mask-image: url(/hero/circuit.svg);
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+  -webkit-mask-size: auto 100%;
+  mask-size: auto 100%;
+  -webkit-mask-position: calc(var(--bgp, 0) * -160px) center;
+  mask-position: calc(var(--bgp, 0) * -160px) center;
+  transition: -webkit-mask-position 1s cubic-bezier(0.22, 1, 0.36, 1), mask-position 1s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
 
 .viewport { position: absolute; inset: 0; overflow: hidden; }
 .track {
@@ -142,6 +201,7 @@ onBeforeUnmount(() => {
   transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
 }
+.track.no-anim { transition: none; }
 
 .slide {
   position: relative;
@@ -169,18 +229,6 @@ onBeforeUnmount(() => {
   user-select: none;
   flex: none;
 }
-
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  margin: 0 0 22px;
-  color: var(--accent);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.24em;
-}
-.eyebrow::before { content: ""; width: 30px; height: 2px; background: var(--accent); }
 
 .title {
   margin: 0;
@@ -278,6 +326,7 @@ onBeforeUnmount(() => {
 
 @media (prefers-reduced-motion: reduce) {
   .track { transition: none; }
+  .hero::before { transition: none; }
 }
 
 @media (max-width: 900px) {
