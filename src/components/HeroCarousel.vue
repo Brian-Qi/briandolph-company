@@ -157,7 +157,6 @@ onBeforeUnmount(() => {
   gap: 40px;
   width: 100%;
 }
-.slide:nth-child(even) .slide-inner { flex-direction: row-reverse; }
 .copy-block { max-width: 760px; }
 .index {
   font-family: var(--font-display);
