@@ -72,21 +72,21 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 
 const slides = [
   {
-    title: '把想法，做成能上线的产品。',
+    title: '把想法 做成能上线的产品',
     sub: '杭州的独立数字内容工作室——策划、设计、开发、上线，一支团队全程自研。',
     cta: '查看代表案例', to: '/works',
     cta2: '联系我们', to2: '/contact',
     tab: '关于我们'
   },
   {
-    title: '小而完整，全程负责。',
+    title: '小而完整 全程负责',
     sub: '一支团队从需求走到上线，不外包、不转包，交付可用、可维护。',
     cta: '了解合作流程', to: '/services',
     cta2: '联系我们', to2: '/contact',
     tab: '我们的坚持'
   },
   {
-    title: '把现实搬进可交互的数字孪生。',
+    title: '把现实搬进可交互的数字孪生',
     sub: '面向游戏、展示与仿真场景的 VR 与数字孪生内容制作。',
     cta: '了解能力', to: '/services',
     cta2: '联系我们', to2: '/contact',
@@ -225,7 +225,7 @@ onBeforeUnmount(() => {
   line-height: 0.8;
   letter-spacing: -0.04em;
   color: transparent;
-  -webkit-text-stroke: 1.5px rgba(128, 132, 142, 0.38);
+  -webkit-text-stroke: 2px var(--hero-index);
   user-select: none;
   flex: none;
 }
@@ -238,6 +238,8 @@ onBeforeUnmount(() => {
   line-height: 1.04;
   font-weight: 900;
   letter-spacing: -0.03em;
+  text-wrap: balance;
+  max-inline-size: 14ch;
 }
 .sub {
   margin: 26px 0 0;
@@ -283,8 +285,8 @@ onBeforeUnmount(() => {
 }
 .dot {
   position: relative;
-  width: 36px;
-  height: 24px;
+  width: 44px;
+  height: 44px;
   padding: 0;
   border: 0;
   background: none;
@@ -310,8 +312,8 @@ onBeforeUnmount(() => {
   right: 30px;
   bottom: 24px;
   z-index: 4;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border-radius: var(--radius);
   display: grid;
   place-items: center;

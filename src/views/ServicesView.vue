@@ -10,7 +10,7 @@
     <div class="wrap">
       <div class="cards">
         <div v-for="(g, i) in co.scopeGroups" :key="g.key" class="card">
-          <h3>{{ g.title }}</h3>
+          <h2>{{ g.title }}</h2>
           <p>{{ g.desc }}</p>
           <ul>
             <li v-for="it in g.items" :key="it">{{ it }}</li>

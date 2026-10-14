@@ -16,6 +16,7 @@
   --grad: #26c6da;
   --grad-line: #26262e;
   --divider: #26262e;
+  --hero-index: rgba(158, 164, 176, .58);
 
   /* 主题层色（昼夜切换用） */
   --head-bg: rgba(10,10,12,.82);
@@ -55,6 +56,7 @@
   --on-accent: #ffffff;
   --grad-line: #e3e5ea;
   --divider: color-mix(in srgb, var(--accent) 55%, var(--line));
+  --hero-index: var(--accent);
   --head-bg: #ffffff;
   --head-fg: #3b3e48;
   --head-fg-strong: #111318;
@@ -133,34 +135,37 @@ h2.blk-title { font-family: var(--font-display); font-size: clamp(26px, 1.2vw + 
 .site-head { position: sticky; top: 0; background: var(--head-bg); backdrop-filter: blur(10px); z-index: 20; }
 .site-head::after { content: ""; display: block; height: var(--head-line-h); background: var(--head-line); }
 .nav { display: flex; align-items: center; height: 72px; gap: clamp(20px, 2.6vw, 40px); }
-.brand { display: flex; align-items: center; gap: 12px; font-weight: 700; letter-spacing: .02em; color: var(--head-fg-strong); }
+.brand { display: flex; align-items: center; gap: 12px; padding: 8px 0; font-weight: 700; letter-spacing: .02em; color: var(--head-fg-strong); }
 .mark { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; display: block; flex: none; outline: 1px solid var(--head-fg-strong); outline-offset: 2px; transition: outline-color .2s ease; }
 .brand:hover .mark { outline-color: var(--accent); }
 .menu { display: flex; gap: clamp(18px, 2.2vw, 30px); margin: 0 0 0 auto; padding: 0; list-style: none; color: var(--head-fg); font-size: 15px; }
-.menu a { color: var(--head-fg); }
+.menu a { display: inline-block; padding: 12px 0; color: var(--head-fg); }
 .menu a:hover { color: var(--head-fg-strong); }
 .menu a.active { color: var(--head-active); font-weight: 600; }
 .menu-cta { display: none; }
 .cta { padding: 9px 20px; font-size: 14px; font-weight: 600; color: var(--on-accent); background: var(--grad); transition: filter .2s ease; }
 .cta:hover { filter: brightness(1.07); }
-/* 主题切换：中性滑动开关（滑块带图标） */
+/* 主题切换：中性滑动开关（滑块带图标）；按钮 44px 高命中区，胶囊为可视轨道 */
 .theme-switch {
-  position: relative; width: 52px; height: 28px; padding: 0; flex: none;
-  border: 0; border-radius: 999px;
-  background: var(--surface-2); cursor: pointer;
-  transition: background .26s var(--ease);
+  position: relative; width: 52px; height: 44px; padding: 0; flex: none;
+  border: 0; background: transparent; cursor: pointer;
+  display: grid; place-items: center;
 }
-.theme-switch:hover { background: var(--line); }
-.theme-switch .knob {
+.tt-track {
+  position: relative; width: 52px; height: 28px; border-radius: 999px;
+  background: var(--surface-2); transition: background .26s var(--ease);
+}
+.theme-switch:hover .tt-track { background: var(--line); }
+.knob {
   position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%;
   display: grid; place-items: center; color: var(--ink2);
   background: var(--surface); box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
   transition: transform .34s var(--ease), color .26s var(--ease);
 }
 .theme-switch:hover .knob { color: var(--ink); }
-.theme-switch .knob { transform: translateX(24px); }
+.knob { transform: translateX(24px); }
 .theme-switch.is-light .knob { transform: translateX(0); }
-.theme-switch .knob svg { width: 12px; height: 12px; display: block; }
+.knob svg { width: 12px; height: 12px; display: block; }
 
 /* View Transitions 圆形揭幕 */
 .vt-theme * { transition: none !important; }
@@ -215,7 +220,7 @@ h2.blk-title { font-family: var(--font-display); font-size: clamp(26px, 1.2vw + 
 .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--gap-lg); background: none; border: 0; }
 .card { background: transparent; padding: clamp(20px, 2vw, 28px) 0 clamp(24px, 2.2vw, 32px); border-top: 1px solid var(--divider); }
 .card .no { color: var(--accent); font-size: 13px; font-weight: 700; letter-spacing: .1em; }
-.card h3 { margin: 12px 0; font-size: 20px; color: var(--ink); }
+.card h2, .card h3 { margin: 12px 0; font-size: 20px; color: var(--ink); }
 .card p { margin: 0; color: var(--ink2); font-size: 15px; }
 .card ul { margin: 14px 0 0; padding-left: 18px; color: var(--muted); font-size: 14px; line-height: 1.95; }
 .card:hover { background: transparent; }
@@ -241,7 +246,7 @@ h2.blk-title { font-family: var(--font-display); font-size: clamp(26px, 1.2vw + 
 .case-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .case-scrim { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(6,6,8,.92) 0%, rgba(6,6,8,.35) 44%, rgba(6,6,8,0) 74%); }
 .case-hero-copy { position: absolute; left: 36px; bottom: 30px; z-index: 2; }
-.case-hero-copy h3 { font-family: var(--font-display); font-size: clamp(22px, 1.4vw + 12px, 40px); font-weight: 900; letter-spacing: -0.01em; margin: 0; color: #f4f3f6; }
+.case-hero-copy h2, .case-hero-copy h3 { font-family: var(--font-display); font-size: clamp(22px, 1.4vw + 12px, 40px); font-weight: 900; letter-spacing: -0.01em; margin: 0; color: #f4f3f6; }
 .case-hero-copy .sub { font-size: 14px; font-weight: 600; margin: 8px 0 0; color: var(--accent); }
 .case-cta { position: absolute; right: 36px; bottom: 30px; z-index: 2; }
 .case-body { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 0 var(--gap-lg); padding-top: clamp(24px, 2.6vw, 30px); }

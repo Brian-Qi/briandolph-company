@@ -13,7 +13,7 @@
           <img :src="w.cover" :alt="w.name" loading="lazy" decoding="async">
           <span class="case-scrim"></span>
           <div class="case-hero-copy">
-            <h3>{{ w.name }}</h3>
+            <h2>{{ w.name }}</h2>
             <p class="sub">{{ w.subtitle }}</p>
           </div>
           <a class="btn primary case-cta" :href="w.url" target="_blank" rel="noopener">前往体验 ↗</a>
