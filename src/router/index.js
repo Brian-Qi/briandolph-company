@@ -19,10 +19,10 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
-  scrollBehavior: () =>
-    new Promise((resolve) => {
-      window.setTimeout(() => resolve({ top: 0 }), 280)
-    })
+  scrollBehavior: (to, from, savedPosition) => {
+    if (savedPosition) return savedPosition
+    return { top: 0, behavior: 'smooth' }
+  }
 })
 
 const DEFAULT_DESC = '彼岸时墟游戏工作室 —— 游戏开发、数字内容、软件与数据服务，从创意到上线一站式交付。'
