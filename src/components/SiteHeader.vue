@@ -2,7 +2,7 @@
   <header class="site-head">
     <div class="wrap nav">
       <RouterLink class="brand" to="/" @click="open = false">
-        <img class="mark" src="/logo.png" alt="" width="28" height="28" /> 彼岸时墟游戏工作室
+        <img class="mark" src="/logo.svg" alt="" width="28" height="28" /> 彼岸时墟游戏工作室
       </RouterLink>
 
       <button

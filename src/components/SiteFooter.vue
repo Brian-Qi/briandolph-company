@@ -3,12 +3,8 @@
     <div class="wrap">
       <div class="foot-grid">
         <div>
-          <h4 class="foot-brand"><img src="/logo.png" alt="" class="foot-logo" width="30" height="30" />彼岸时墟游戏工作室</h4>
+          <h4 class="foot-brand"><img src="/logo.svg" alt="" class="foot-logo" width="30" height="30" />彼岸时墟游戏工作室</h4>
           <p class="foot-desc">游戏开发 · 数字内容 · 软件与数据<br />杭州市拱墅区 · 个体工商户（存续）</p>
-          <div class="foot-links">
-            <a href="/self/">个人网站 ↗</a>
-            <a href="/arg_01/">作品 · 《第五张财签》 ↗</a>
-          </div>
         </div>
         <div>
           <h4>登记信息</h4>

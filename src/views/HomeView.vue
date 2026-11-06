@@ -31,7 +31,7 @@
       </div>
       <div class="work-strip">
         <RouterLink v-for="w in co.works" :key="w.id" class="wcard" to="/works">
-          <img :src="w.cover" :alt="w.name" width="1600" height="1000" decoding="async">
+          <img :src="w.cover" :alt="w.name" width="1600" height="1000" loading="lazy" decoding="async">
           <div class="bd">
             <h3>{{ w.name }}</h3>
             <p>{{ w.subtitle }}</p>

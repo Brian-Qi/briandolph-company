@@ -1,0 +1,23 @@
+{
+  "name": "biyu-splash",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run build:vendor && npm run build:cursor && npm run build:splash && npm run build:topography",
+    "build:vendor": "vite build --config vite.vendor.config.js",
+    "build:cursor": "vite build --config vite.cursor.config.js",
+    "build:splash": "vite build --config vite.splash.config.js",
+    "build:topography": "vite build --config vite.topography.config.js"
+  },
+  "dependencies": {
+    "ogl": "^1.0.11",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.0.7"
+  }
+}

@@ -1,17 +1,15 @@
 <template>
   <section
     class="hero"
-    :class="{ 'is-paused': paused }"
     :style="{ '--bgp': bgPos }"
     aria-roledescription="轮播"
     aria-label="工作室简介"
-    @mouseenter="hoverPaused = true"
-    @mouseleave="hoverPaused = false"
-    @focusin="hoverPaused = true"
-    @focusout="hoverPaused = false"
+    @pointermove="onPointerMove"
+    @pointerleave="onPointerLeave"
     @touchstart.passive="onTouchStart"
     @touchend.passive="onTouchEnd"
   >
+    <div class="hero-bg" data-topography aria-hidden="true"></div>
     <div class="viewport">
       <div
         class="track"
@@ -40,8 +38,16 @@
       </div>
     </div>
 
-    <button class="side prev" aria-label="上一张" @click="advance(-1)">←</button>
-    <button class="side next" aria-label="下一张" @click="advance(1)">→</button>
+    <button class="side prev" :class="{ visible: nearPrev }" aria-label="上一张" @click="advance(-1)">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M15 5 8 12l7 7" />
+      </svg>
+    </button>
+    <button class="side next" :class="{ visible: nearNext }" aria-label="下一张" @click="advance(1)">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
 
     <div class="dots">
       <button
@@ -55,15 +61,6 @@
       ></button>
     </div>
 
-    <button
-      class="pause"
-      :aria-label="userPaused ? '继续自动播放' : '暂停自动播放'"
-      :aria-pressed="userPaused"
-      @click="userPaused = !userPaused"
-    >
-      <span v-if="userPaused" aria-hidden="true">▶</span>
-      <span v-else aria-hidden="true">❚❚</span>
-    </button>
   </section>
 </template>
 
@@ -107,9 +104,8 @@ const anim = ref(true)
 const bgPos = ref(0)          // 背景单调计数（永不回绕）
 const current = computed(() => ((pos.value - 1) % n + n) % n)
 
-const hoverPaused = ref(false)
-const userPaused = ref(false)
-const paused = computed(() => hoverPaused.value || userPaused.value)
+const nearPrev = ref(false)
+const nearNext = ref(false)
 
 let busy = false
 let timer = null
@@ -155,9 +151,22 @@ function onTouchEnd(e) {
   if (Math.abs(dx) > 45) advance(dx < 0 ? 1 : -1)
 }
 
+function onPointerMove(e) {
+  if (e.pointerType && e.pointerType !== 'mouse') return
+  const rect = e.currentTarget.getBoundingClientRect()
+  const midY = rect.top + rect.height / 2
+  nearPrev.value = Math.hypot(e.clientX - (rect.left + 54), e.clientY - midY) < 150
+  nearNext.value = Math.hypot(e.clientX - (rect.right - 54), e.clientY - midY) < 150
+}
+
+function onPointerLeave() {
+  nearPrev.value = false
+  nearNext.value = false
+}
+
 onMounted(() => {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  if (!reduce) timer = setInterval(() => { if (!paused.value) advance(1) }, 7000)
+  if (!reduce) timer = setInterval(() => advance(1), 7000)
   window.addEventListener('keydown', onKey)
 })
 onBeforeUnmount(() => {
@@ -175,26 +184,17 @@ onBeforeUnmount(() => {
   background: var(--bg);
   border-bottom: 1px solid var(--divider);
 }
-/* 电路板纹路：SVG 作遮罩、以主题色低透明铺底（昼夜自适应），水平无缝平铺；随轮播更慢平移→景深 */
-.hero::before {
-  content: "";
+.hero-bg {
   position: absolute;
   inset: 0;
-  background-color: var(--accent);
-  opacity: .08;
-  -webkit-mask-image: url(/hero/circuit.svg);
-  mask-image: url(/hero/circuit.svg);
-  -webkit-mask-repeat: repeat-x;
-  mask-repeat: repeat-x;
-  -webkit-mask-size: auto 100%;
-  mask-size: auto 100%;
-  -webkit-mask-position: calc(var(--bgp, 0) * -160px) center;
-  mask-position: calc(var(--bgp, 0) * -160px) center;
-  transition: -webkit-mask-position 1s cubic-bezier(0.22, 1, 0.36, 1), mask-position 1s cubic-bezier(0.22, 1, 0.36, 1);
-  pointer-events: none;
+  z-index: 0;
+  opacity: 0.55;
+  pointer-events: auto;
 }
 
-.viewport { position: absolute; inset: 0; overflow: hidden; }
+.viewport { position: absolute; inset: 0; overflow: hidden; z-index: 1; pointer-events: none; }
+.viewport a, .viewport button { pointer-events: auto; }
+
 .track {
   display: flex;
   height: 100%;
@@ -254,21 +254,43 @@ onBeforeUnmount(() => {
 .side {
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-50%) scale(.96);
   z-index: 4;
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
   border-radius: var(--radius);
   display: grid;
   place-items: center;
-  font-size: 18px;
   color: var(--ink2);
-  background: var(--surface-2);
-  border: 0;
+  background: transparent;
+  border: 1px solid var(--divider);
   cursor: pointer;
-  transition: background .26s var(--ease), color .26s var(--ease);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity .22s var(--ease),
+    transform .22s var(--ease),
+    background .26s var(--ease),
+    border-color .26s var(--ease),
+    color .26s var(--ease);
 }
-.side:hover { color: var(--on-accent); background: var(--accent); }
+.side svg {
+  transition: transform .26s var(--ease);
+}
+.side.visible,
+.side:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(-50%) scale(1);
+}
+.side:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
+}
+.side.prev:hover svg { transform: translateX(-2px); }
+.side.next:hover svg { transform: translateX(2px); }
 .side.prev { left: 30px; }
 .side.next { right: 30px; }
 
@@ -306,29 +328,8 @@ onBeforeUnmount(() => {
 .dot:hover::after { background: rgba(128, 132, 142, 0.65); }
 .dot.on::after { background: var(--accent); }
 
-/* 暂停 */
-.pause {
-  position: absolute;
-  right: 30px;
-  bottom: 24px;
-  z-index: 4;
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius);
-  display: grid;
-  place-items: center;
-  font-size: 12px;
-  color: var(--ink2);
-  background: var(--surface-2);
-  border: 0;
-  cursor: pointer;
-  transition: background .26s var(--ease), color .26s var(--ease), transform .32s var(--ease);
-}
-.pause:hover { color: var(--on-accent); background: var(--accent); transform: translateY(-2px); }
-
 @media (prefers-reduced-motion: reduce) {
   .track { transition: none; }
-  .hero::before { transition: none; }
 }
 
 @media (max-width: 900px) {
@@ -339,7 +340,6 @@ onBeforeUnmount(() => {
   .sub { font-size: 15.5px; margin-top: 18px; }
   .btns { margin-top: 28px; }
   .side { display: none; }
-  .pause { right: 20px; bottom: 18px; }
   .dots { bottom: 22px; }
 }
 </style>

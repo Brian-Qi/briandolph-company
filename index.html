@@ -8,7 +8,137 @@
         try { if (localStorage.getItem('theme') === 'light') document.documentElement.setAttribute('data-theme', 'light'); } catch (e) {}
       })();
     </script>
-    <link rel="icon" href="/logo.png" type="image/png" />
+    <style>
+      #biyu-splash-boot {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483647;
+        display: grid;
+        place-items: center;
+        background: #08080d;
+        transition: opacity 0.45s ease;
+      }
+      .biyu-loader {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 22px;
+      }
+      .biyu-loader-logo {
+        width: 64px;
+        height: 64px;
+        object-fit: contain;
+        opacity: 0.92;
+        filter: drop-shadow(0 0 14px rgba(255, 60, 60, 0.35));
+        animation: biyuPulse 1.8s ease-in-out infinite;
+      }
+      .biyu-loader-line {
+        width: 180px;
+        height: 2px;
+        border-radius: 2px;
+        background: rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+      }
+      .biyu-loader-line span {
+        display: block;
+        width: 42%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, #ff4d4d, transparent);
+        animation: biyuSweep 1.4s ease-in-out infinite;
+      }
+      .biyu-loader-text {
+        color: rgba(255, 255, 255, 0.42);
+        font: 500 11px/1 system-ui, -apple-system, 'Segoe UI', sans-serif;
+        letter-spacing: 0.34em;
+        text-indent: 0.34em;
+      }
+      @keyframes biyuPulse {
+        0%,
+        100% {
+          opacity: 0.55;
+          transform: scale(0.96);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      @keyframes biyuSweep {
+        0% {
+          transform: translateX(-120%);
+        }
+        100% {
+          transform: translateX(320%);
+        }
+      }
+    </style>
+    <script>
+      (function () {
+        var KEY = 'biyu_splash_seen';
+        var force = false;
+        try {
+          force = new URLSearchParams(location.search).has('splash');
+        } catch (e) {}
+        var seen = false;
+        try {
+          seen = sessionStorage.getItem(KEY) === '1';
+        } catch (e) {}
+
+        var boot = null;
+        var dismissed = false;
+        function dismissBoot() {
+          if (dismissed) return;
+          boot = boot || document.getElementById('biyu-splash-boot');
+          if (!boot) return;
+          dismissed = true;
+          boot.style.opacity = '0';
+          window.setTimeout(function () {
+            if (boot) boot.remove();
+          }, 470);
+        }
+
+        function whenSiteReady(cb) {
+          if (document.readyState === 'complete') {
+            window.setTimeout(cb, 260);
+            return;
+          }
+          var done = false;
+          function go() {
+            if (done) return;
+            done = true;
+            window.setTimeout(cb, 260);
+          }
+          window.addEventListener('load', go, { once: true });
+          window.setTimeout(go, 12000);
+        }
+
+        function addScript(src, onload, onerror) {
+          var el = document.createElement('script');
+          el.src = src;
+          el.defer = true;
+          if (onload) el.onload = onload;
+          if (onerror) el.onerror = onerror;
+          document.head.appendChild(el);
+          return el;
+        }
+
+        addScript(
+          '/splash/vendor.js',
+          function () {
+            addScript('/splash/cursor.js', null, function () {});
+            if (force || !seen) {
+              addScript('/splash/splash.js', null, dismissBoot);
+            } else {
+              whenSiteReady(dismissBoot);
+            }
+          },
+          dismissBoot
+        );
+
+        window.setTimeout(dismissBoot, 15000);
+      })();
+    </script>
+    <link rel="icon" href="/logo.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/logo.png" />
     <meta name="theme-color" content="#0b0b0d" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -31,7 +161,7 @@
         "@type": "Organization",
         "name": "杭州市拱墅区彼岸时墟游戏工作室",
         "alternateName": "Lycoris Null",
-        "logo": "/logo.png",
+        "logo": "/logo.svg",
         "email": "qisihao666@163.com",
         "identifier": "92330105MAKDBGY136",
         "address": {
@@ -45,6 +175,13 @@
     </script>
   </head>
   <body>
+    <div id="biyu-splash-boot">
+      <div class="biyu-loader">
+        <img class="biyu-loader-logo" src="/logo.svg" alt="" />
+        <div class="biyu-loader-line"><span></span></div>
+        <div class="biyu-loader-text">正在进入彼岸时墟</div>
+      </div>
+    </div>
     <div id="app"></div>
     <script type="module" src="/src/main.js"></script>
   </body>

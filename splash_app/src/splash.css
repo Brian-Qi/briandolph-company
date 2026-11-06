@@ -1,0 +1,145 @@
+#biyu-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483646;
+  background: #08080d;
+}
+
+.biyu-splash {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #08080d;
+}
+
+.biyu-stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.biyu-stack {
+  position: relative;
+  display: grid;
+  place-items: center;
+  animation: biyuRise 0.75s cubic-bezier(0.22, 0.61, 0.36, 1) 0.95s both;
+}
+
+.biyu-ele {
+  width: 320px;
+  height: 320px;
+  animation: biyuLogo 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  -webkit-mask-image: radial-gradient(closest-side, #000 70%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 70%, transparent 100%);
+}
+
+.biyu-name {
+  position: absolute;
+  top: calc(50% + 145px);
+  left: 50%;
+  width: 300px;
+  height: 110px;
+  transform: translateX(-50%);
+  opacity: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 0 4px rgba(255, 70, 70, 0.7)) drop-shadow(0 0 10px rgba(143, 0, 0, 0.45));
+  animation: biyuName 0.7s ease 1.5s both;
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at center, #000 78%, transparent 100%);
+  mask-image: radial-gradient(ellipse 50% 50% at center, #000 78%, transparent 100%);
+}
+
+.biyu-skip {
+  position: absolute;
+  right: 28px;
+  bottom: 24px;
+  z-index: 10;
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.55);
+  padding: 10px 16px;
+  font: 500 12px/1 system-ui, -apple-system, 'Segoe UI', sans-serif;
+  letter-spacing: 0.18em;
+  cursor: pointer;
+  opacity: 0;
+  animation: biyuSkipIn 0.6s ease 1.2s forwards;
+}
+
+.biyu-skip:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.electric-logo {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.glow-converge {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.glow-converge__canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  user-select: none;
+}
+
+.glow-converge__content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes biyuLogo {
+  0% {
+    opacity: 0;
+    transform: scale(0.12);
+  }
+  55% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes biyuRise {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-78px);
+  }
+}
+
+@keyframes biyuName {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes biyuSkipIn {
+  to {
+    opacity: 1;
+  }
+}
