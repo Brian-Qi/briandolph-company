@@ -29,7 +29,6 @@
               <p class="sub">{{ it.s.sub }}</p>
               <div class="btns">
                 <RouterLink class="btn primary" :to="it.s.to">{{ it.s.cta }}</RouterLink>
-                <RouterLink class="btn ghost" :to="it.s.to2">{{ it.s.cta2 }}</RouterLink>
               </div>
             </div>
             <div class="index" aria-hidden="true">{{ String(it.real + 1).padStart(2, '0') }}</div>
@@ -72,21 +71,18 @@ const slides = [
     title: '把想法 做成能上线的产品',
     sub: '杭州的独立数字内容工作室——策划、设计、开发、上线，一支团队全程自研。',
     cta: '查看代表案例', to: '/works',
-    cta2: '联系我们', to2: '/contact',
     tab: '关于我们'
   },
   {
     title: '小而完整 全程负责',
     sub: '一支团队从需求走到上线，不外包、不转包，交付可用、可维护。',
     cta: '了解合作流程', to: '/services',
-    cta2: '联系我们', to2: '/contact',
     tab: '我们的坚持'
   },
   {
     title: '把现实搬进可交互的数字孪生',
     sub: '面向游戏、展示与仿真场景的 VR 与数字孪生内容制作。',
     cta: '了解能力', to: '/services',
-    cta2: '联系我们', to2: '/contact',
     tab: '前沿方向'
   }
 ]
