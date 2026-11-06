@@ -8,6 +8,11 @@ const Splash = ({ onDone }) => {
   const [merged, setMerged] = useState(false)
 
   useEffect(() => {
+    const timer = window.setTimeout(() => onDone?.(), 9000)
+    return () => window.clearTimeout(timer)
+  }, [onDone])
+
+  useEffect(() => {
     if (!merged) return undefined
     const timer = window.setTimeout(() => onDone?.(), 3000)
     return () => window.clearTimeout(timer)

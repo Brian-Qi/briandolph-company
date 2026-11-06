@@ -53,7 +53,7 @@ const scheduleTopography = () => {
   const run = () => requestTopography()
   if (splashPlanned()) {
     window.addEventListener('biyu-splash-done', run, { once: true })
-    window.setTimeout(run, 12000)
+    window.setTimeout(run, 6000)
   } else if ('requestIdleCallback' in window) {
     window.requestIdleCallback(run, { timeout: 2500 })
   } else {

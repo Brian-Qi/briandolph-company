@@ -15,6 +15,7 @@ const shouldPlaySplash = () => {
   }
 }
 
+const CURSOR_WAIT_CLASS = 'biyu-splash-cursor-none'
 const removeBoot = () => {
   const boot = document.getElementById('biyu-splash-boot')
   if (boot) boot.remove()
@@ -56,6 +57,7 @@ const mountSplash = () => {
 
   const html = document.documentElement
   const body = document.body
+  html.classList.add(CURSOR_WAIT_CLASS)
   const prevHtmlOverflow = html.style.overflow
   const prevBodyOverflow = body.style.overflow
   html.style.overflow = 'hidden'
@@ -79,6 +81,7 @@ const mountSplash = () => {
         if (style) style.remove()
         html.style.overflow = prevHtmlOverflow
         body.style.overflow = prevBodyOverflow
+        html.classList.remove(CURSOR_WAIT_CLASS)
         window.dispatchEvent(new Event('biyu-splash-done'))
       }, 650)
     })
