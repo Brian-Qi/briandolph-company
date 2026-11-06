@@ -109,6 +109,27 @@ const nearNext = ref(false)
 
 let busy = false
 let timer = null
+let autoStarted = false
+
+function startAuto() {
+  if (autoStarted || timer) return
+  autoStarted = true
+  timer = setInterval(() => advance(1), 7000)
+}
+
+function startAfterSplash() {
+  let seen = false
+  try {
+    seen = sessionStorage.getItem('biyu_splash_seen') === '1'
+  } catch {}
+  const splashOnPage =
+    document.getElementById('biyu-splash') || document.getElementById('biyu-splash-boot')
+  if (splashOnPage || !seen) {
+    window.addEventListener('biyu-splash-done', startAuto, { once: true })
+    return
+  }
+  startAuto()
+}
 
 function snapTo(target) {
   anim.value = false
@@ -166,11 +187,12 @@ function onPointerLeave() {
 
 onMounted(() => {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  if (!reduce) timer = setInterval(() => advance(1), 7000)
+  if (!reduce) startAfterSplash()
   window.addEventListener('keydown', onKey)
 })
 onBeforeUnmount(() => {
   if (timer) clearInterval(timer)
+  window.removeEventListener('biyu-splash-done', startAuto)
   window.removeEventListener('keydown', onKey)
 })
 </script>
