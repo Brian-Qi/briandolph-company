@@ -12,3 +12,6 @@ _design/
 _hero_gen/
 public/arg_01/
 public/personal/
+
+# 本地敏感联系方式（不入库）
+src/data/contact.local.js

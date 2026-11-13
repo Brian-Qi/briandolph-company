@@ -23,6 +23,15 @@
           :aria-hidden="i !== pos"
           :inert="i !== pos"
         >
+          <div v-if="theme === 'light'" class="slide-media" aria-hidden="true">
+            <img
+              :src="it.s.imgLight"
+              alt=""
+              loading="eager"
+              :fetchpriority="it.real === 0 ? 'high' : 'auto'"
+              decoding="async"
+            >
+          </div>
           <div class="wrap slide-inner">
             <div class="copy-block">
               <component :is="i === pos ? 'h1' : 'p'" class="title">{{ it.s.title }}</component>
@@ -31,7 +40,19 @@
                 <RouterLink class="btn primary" :to="it.s.to">{{ it.s.cta }}</RouterLink>
               </div>
             </div>
-            <div class="index" aria-hidden="true">{{ String(it.real + 1).padStart(2, '0') }}</div>
+            <div class="index" aria-hidden="true">
+              <HeroStrokeNumber
+                v-if="theme === 'light'"
+                :text="String(it.real + 1).padStart(2, '0')"
+                :uid="i"
+              />
+              <HeroTechNumber
+                v-else
+                :text="String(it.real + 1).padStart(2, '0')"
+                :uid="i"
+                :active="i === pos"
+              />
+            </div>
           </div>
         </article>
       </div>
@@ -65,25 +86,33 @@
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import HeroStrokeNumber from './HeroStrokeNumber.vue'
+import HeroTechNumber from './HeroTechNumber.vue'
 
 const slides = [
   {
     title: '把想法 做成能上线的产品',
     sub: '杭州的独立数字内容工作室——策划、设计、开发、上线，一支团队全程自研。',
     cta: '查看代表案例', to: '/works',
-    tab: '关于我们'
+    tab: '关于我们',
+    imgLight: '/hero/light-01-desk.webp',
+    imgDark: '/hero/slide-1.webp'
   },
   {
     title: '小而完整 全程负责',
     sub: '一支团队从需求走到上线，不外包、不转包，交付可用、可维护。',
     cta: '了解合作流程', to: '/services',
-    tab: '我们的坚持'
+    tab: '我们的坚持',
+    imgLight: '/hero/light-02-archive.webp',
+    imgDark: '/hero/slide-2.webp'
   },
   {
     title: '把现实搬进可交互的数字孪生',
     sub: '面向游戏、展示与仿真场景的 VR 与数字孪生内容制作。',
     cta: '了解能力', to: '/services',
-    tab: '前沿方向'
+    tab: '前沿方向',
+    imgLight: '/hero/light-03-vr.webp',
+    imgDark: '/hero/slide-3.webp'
   }
 ]
 const n = slides.length
@@ -99,6 +128,7 @@ const pos = ref(1)            // loop 中的位置
 const anim = ref(true)
 const bgPos = ref(0)          // 背景单调计数（永不回绕）
 const current = computed(() => ((pos.value - 1) % n + n) % n)
+const theme = ref(document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark')
 
 const nearPrev = ref(false)
 const nearNext = ref(false)
@@ -106,6 +136,7 @@ const nearNext = ref(false)
 let busy = false
 let timer = null
 let autoStarted = false
+let themeObserver = null
 
 function startAuto() {
   if (autoStarted || timer) return
@@ -182,12 +213,17 @@ function onPointerLeave() {
 }
 
 onMounted(() => {
+  themeObserver = new MutationObserver(() => {
+    theme.value = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark'
+  })
+  themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   if (!reduce) startAfterSplash()
   window.addEventListener('keydown', onKey)
 })
 onBeforeUnmount(() => {
   if (timer) clearInterval(timer)
+  themeObserver?.disconnect()
   window.removeEventListener('biyu-splash-done', startAuto)
   window.removeEventListener('keydown', onKey)
 })
@@ -217,7 +253,6 @@ onBeforeUnmount(() => {
   display: flex;
   height: 100%;
   transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
 }
 .track.no-anim { transition: none; }
 
@@ -227,8 +262,40 @@ onBeforeUnmount(() => {
   min-width: 100%;
   display: flex;
   align-items: center;
+  overflow: hidden;
+}
+.slide-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.slide-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    rgba(255, 255, 255, 0.86) 22%,
+    rgba(255, 255, 255, 0.48) 48%,
+    rgba(255, 255, 255, 0) 76%
+  );
+}
+
+.slide-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 72% center;
+  display: block;
 }
 .slide-inner {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -359,5 +426,6 @@ onBeforeUnmount(() => {
   .btns { margin-top: 28px; }
   .side { display: none; }
   .dots { bottom: 22px; }
+  .slide-media img { object-position: 66% center; }
 }
 </style>

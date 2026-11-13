@@ -33,7 +33,7 @@ npm run preview    # 本地预览 dist/
 
 ## 内容与数据
 
-- 站点文案与工商信息集中在 `src/data/company.js`（电话 / 微信为占位时，联系页会自动隐藏对应面板）。
+- 站点文案集中在 `src/data/company.js`；电话 / 微信从 `src/data/contact.local.js` 读取（参考 `contact.local.example.js` 本地创建，已 gitignore；缺失时联系页会自动隐藏这两个面板）。
 - 首页轮播图为 AI 插画（`public/hero/slide-*.webp`）；代表案例使用真实项目截图（`public/works/arg-*.webp`）。
 
 ## 素材说明

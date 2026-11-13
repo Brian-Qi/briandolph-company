@@ -1,10 +1,5 @@
 <template>
-  <div class="page-head">
-    <div class="wrap">
-      <h1>核心业务</h1>
-      <p class="sub">从创意到上线，按技术能力划分为四大交付方向。</p>
-    </div>
-  </div>
+  <PageHero index="02" eyebrow="SERVICES" effect="ghost" title="核心业务" subtitle="从创意到上线，按技术能力划分为四大交付方向。" />
 
   <section class="blk">
     <div class="wrap">
@@ -39,5 +34,6 @@
 </template>
 
 <script setup>
+import PageHero from '../components/PageHero.vue'
 import co from '../data/company'
 </script>

@@ -4,13 +4,7 @@
       <div class="foot-grid">
         <div>
           <h4 class="foot-brand"><img src="/logo.svg" alt="" class="foot-logo" width="30" height="30" />彼岸时墟游戏工作室</h4>
-          <p class="foot-desc">游戏开发 · 数字内容 · 软件与数据<br />杭州市拱墅区 · 个体工商户（存续）</p>
-        </div>
-        <div>
-          <h4>登记信息</h4>
-          <div class="foot-line"><span>主体名称</span><b>{{ co.name }}</b></div>
-          <div class="foot-line"><span>经营者</span><b>{{ co.operator }}</b></div>
-          <div class="foot-line"><span>统一社会信用代码</span><b>{{ co.creditCode }}</b></div>
+          <p class="foot-desc">游戏开发 · 数字内容 · 软件与数据<br />杭州市拱墅区</p>
         </div>
         <div>
           <h4>联系方式</h4>

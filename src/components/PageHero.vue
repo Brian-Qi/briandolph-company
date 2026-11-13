@@ -1,0 +1,281 @@
+﻿<template>
+  <section class="page-hero" :style="{ '--hero-p': heroProgress }">
+    <div class="page-hero__bg" aria-hidden="true">
+      <AeroShardsMount v-if="isDark && !scrolledAway && effect === 'aero'" />
+      <GhostFibersMount v-else-if="isDark && !scrolledAway && effect === 'ghost'" />
+      <WebThreadsMount v-else-if="isDark && !scrolledAway && effect === 'web-threads'" />
+      <ParticlesMount v-else-if="isDark && !scrolledAway && effect === 'particles'" />
+      <div v-else-if="isDark" class="page-hero__dark"></div>
+      <div class="page-hero__light"></div>
+    </div>
+
+    <div class="wrap page-hero__inner">
+      <div class="page-hero__copy">
+        <p v-if="eyebrow" class="page-hero__eyebrow">
+          <span class="page-hero__rule"></span>{{ eyebrow }}
+        </p>
+        <h1>{{ title }}</h1>
+        <p class="sub">{{ subtitle }}</p>
+        <slot />
+      </div>
+      <div v-if="index" class="page-hero__mark" aria-hidden="true">{{ index }}</div>
+    </div>
+  </section>
+</template>
+
+<script setup>
+import { onBeforeUnmount, onMounted, ref } from 'vue'
+import AeroShardsMount from './AeroShardsMount.vue'
+import GhostFibersMount from './GhostFibersMount.vue'
+import WebThreadsMount from './WebThreadsMount.vue'
+import ParticlesMount from './ParticlesMount.vue'
+
+defineProps({
+  title: { type: String, required: true },
+  subtitle: { type: String, default: '' },
+  effect: { type: String, default: 'none' },
+  eyebrow: { type: String, default: '' },
+  index: { type: String, default: '' }
+})
+
+const HEADER = 72
+const SNAP_LOCK_MS = 650
+const MIN_DELTA = 24
+
+const isDark = ref(true)
+const scrolledAway = ref(false)
+const heroProgress = ref(0)
+let observer = null
+let snapLocked = false
+let snapDir = 1
+let snapTarget = null
+let snapTimer = null
+
+function readTheme() {
+  isDark.value = document.documentElement.getAttribute('data-theme') !== 'light'
+}
+
+function readScroll() {
+  const travel = Math.max(1, window.innerHeight - HEADER)
+  heroProgress.value = Math.min(1, Math.max(0, window.scrollY / travel))
+  scrolledAway.value = window.scrollY >= travel - 2
+}
+
+function contentBoundary() {
+  const el = document.querySelector('.route-page > .page-hero + .blk')
+  if (!el) return null
+  return el.getBoundingClientRect().top + window.scrollY - HEADER
+}
+
+function unlockSnap() {
+  snapLocked = false
+  snapTarget = null
+  clearTimeout(snapTimer)
+  snapTimer = null
+}
+
+function glideSnap(target, dir) {
+  snapLocked = true
+  snapDir = dir
+  snapTarget = Math.max(0, target)
+  window.scrollTo({ top: snapTarget, behavior: 'smooth' })
+  clearTimeout(snapTimer)
+  snapTimer = setTimeout(() => {
+    if (snapTarget != null && Math.abs(window.scrollY - snapTarget) > 2) {
+      window.scrollTo(0, snapTarget)
+    }
+    unlockSnap()
+  }, SNAP_LOCK_MS)
+}
+
+function onWheel(event) {
+  if (event.ctrlKey || event.metaKey || event.altKey) return
+  if (Math.abs(event.deltaY) < MIN_DELTA) return
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+  const dir = event.deltaY > 0 ? 1 : -1
+  if (snapLocked) {
+    if (dir !== snapDir) {
+      unlockSnap()
+    } else {
+      event.preventDefault()
+      return
+    }
+  }
+
+  const y = window.scrollY
+  const boundary = contentBoundary()
+  if (boundary == null) return
+
+  if (dir > 0 && y < 24 && boundary > y + 8) {
+    event.preventDefault()
+    glideSnap(boundary, dir)
+  } else if (dir < 0 && y > boundary - 8 && y < boundary + 48) {
+    event.preventDefault()
+    glideSnap(0, dir)
+  }
+}
+
+onMounted(() => {
+  readTheme()
+  readScroll()
+  observer = new MutationObserver(readTheme)
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
+  window.addEventListener('scroll', readScroll, { passive: true })
+  window.addEventListener('wheel', onWheel, { passive: false })
+})
+
+onBeforeUnmount(() => {
+  observer?.disconnect()
+  observer = null
+  window.removeEventListener('scroll', readScroll)
+  window.removeEventListener('wheel', onWheel)
+  clearTimeout(snapTimer)
+})
+</script>
+
+<style scoped>
+.page-hero {
+  position: sticky;
+  top: 72px;
+  z-index: 0;
+  min-height: calc(100dvh - 72px);
+  opacity: calc(1 - var(--hero-p, 0) * 0.55);
+  transform: scale(calc(1 + var(--hero-p, 0) * 0.02));
+  transform-origin: 50% 35%;
+  will-change: opacity, transform;
+  overflow: hidden;
+  background:
+    radial-gradient(65% 60% at 22% 18%, rgba(14, 143, 163, 0.16), transparent 66%),
+    radial-gradient(55% 55% at 78% 74%, rgba(85, 255, 120, 0.06), transparent 64%),
+    linear-gradient(135deg, #060a0c 0%, #0a1215 55%, #060a0c 100%);
+  border-bottom: 1px solid var(--divider);
+}
+
+.page-hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.page-hero__dark {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(65% 60% at 22% 18%, rgba(14, 143, 163, 0.16), transparent 66%),
+    radial-gradient(55% 55% at 78% 74%, rgba(85, 255, 120, 0.06), transparent 64%),
+    linear-gradient(135deg, #060a0c 0%, #0a1215 55%, #060a0c 100%);
+}
+
+.page-hero__light {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(65% 58% at 18% 16%, rgba(14, 143, 163, 0.16), transparent 66%),
+    radial-gradient(50% 50% at 82% 72%, rgba(85, 255, 120, 0.08), transparent 65%),
+    linear-gradient(135deg, #f7fbfc 0%, #eef4f7 52%, #fbfbfc 100%);
+}
+
+.page-hero__inner {
+  position: relative;
+  z-index: 1;
+  min-height: calc(100dvh - 72px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  column-gap: clamp(28px, 6vw, 120px);
+  padding-top: clamp(110px, 18vh, 220px);
+  padding-bottom: clamp(52px, 9vh, 120px);
+}
+
+.page-hero__copy {
+  align-self: end;
+  max-width: min(48rem, 62vw);
+}
+
+.page-hero__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 18px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.page-hero__rule {
+  display: block;
+  width: 34px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.7;
+}
+
+.page-hero h1 {
+  margin: 0;
+  max-inline-size: 12ch;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(38px, 4.8vw, 68px);
+  line-height: 1.04;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.page-hero .sub {
+  margin: 22px 0 0;
+  max-width: 34em;
+  color: var(--ink2);
+  font-size: clamp(15px, 1.2vw, 18px);
+  line-height: 1.8;
+}
+
+.page-hero__mark {
+  align-self: end;
+  padding-bottom: 0.04em;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--hero-index);
+  font-family: var(--font-display);
+  font-size: clamp(120px, 18vw, 280px);
+  line-height: 0.74;
+  font-weight: 900;
+  letter-spacing: -0.06em;
+  opacity: 0.75;
+  user-select: none;
+  white-space: nowrap;
+}
+
+:global(html[data-theme="light"]) .page-hero {
+  background: #f7fbfc;
+}
+
+:global(html[data-theme="light"]) .page-hero__light {
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .page-hero__inner {
+    display: block;
+    padding-top: clamp(100px, 16vh, 180px);
+    padding-bottom: clamp(48px, 8vh, 92px);
+  }
+
+  .page-hero__copy {
+    max-width: none;
+  }
+
+  .page-hero__mark {
+    position: absolute;
+    right: 6vw;
+    bottom: 6vh;
+    font-size: clamp(100px, 30vw, 180px);
+    opacity: 0.18;
+    pointer-events: none;
+  }
+}
+</style>

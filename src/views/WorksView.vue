@@ -1,44 +1,24 @@
 <template>
-  <div class="page-head">
-    <div class="wrap">
-      <h1>代表案例</h1>
-      <p class="sub">已上线的真实项目，欢迎体验。</p>
-    </div>
-  </div>
+  <PageHero index="03" eyebrow="WORKS" effect="particles" title="代表案例" subtitle="已上线的真实项目，点开查看详情。" />
 
-  <section class="blk">
+  <section class="blk works-page">
     <div class="wrap">
-      <article v-for="w in co.works" :key="w.id" class="case">
-        <div class="case-hero">
-          <img :src="w.cover" :alt="w.name" loading="lazy" decoding="async">
-          <span class="case-scrim"></span>
-          <div class="case-hero-copy">
-            <h2>{{ w.name }}</h2>
-            <p class="sub">{{ w.subtitle }}</p>
-          </div>
-          <a class="btn primary case-cta" :href="w.url" target="_blank" rel="noopener">前往体验 ↗</a>
-        </div>
-        <div class="case-body">
-          <div class="main">
-            <p>{{ w.desc }}</p>
-            <div class="shots" v-if="w.shots && w.shots.length">
-              <img v-for="s in w.shots" :key="s" :src="s" alt="" loading="lazy" decoding="async">
-            </div>
+      <div class="work-strip">
+        <RouterLink
+          v-for="w in co.works"
+          :key="w.id"
+          class="wcard"
+          :to="{ name: 'work', params: { id: w.id } }"
+        >
+          <img :src="w.cover" :alt="w.name" width="1600" height="1000" loading="lazy" decoding="async">
+          <div class="bd">
+            <h3>{{ w.name }}</h3>
+            <p>{{ w.subtitle }}</p>
             <div class="tags"><span v-for="t in w.tags" :key="t" class="tag">{{ t }}</span></div>
+            <span class="wcard-more">查看案例 ↗</span>
           </div>
-          <aside class="side">
-            <div class="row"><span>年份</span>{{ w.year }}</div>
-            <div class="row"><span>角色</span>{{ w.role }}</div>
-            <div class="row"><span>状态</span>已上线</div>
-            <div class="row">
-              <span>要点</span>
-              <ul class="points">
-                <li v-for="h in w.highlights" :key="h">{{ h }}</li>
-              </ul>
-            </div>
-          </aside>
-        </div>
-      </article>
+        </RouterLink>
+      </div>
     </div>
   </section>
 
@@ -56,5 +36,6 @@
 </template>
 
 <script setup>
+import PageHero from '../components/PageHero.vue'
 import co from '../data/company'
 </script>

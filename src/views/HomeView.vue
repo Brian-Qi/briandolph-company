@@ -30,7 +30,7 @@
         <RouterLink class="btn ghost" to="/works">查看全部案例 →</RouterLink>
       </div>
       <div class="work-strip">
-        <RouterLink v-for="w in co.works" :key="w.id" class="wcard" to="/works">
+        <RouterLink v-for="w in co.works" :key="w.id" class="wcard" :to="{ name: 'work', params: { id: w.id } }">
           <img :src="w.cover" :alt="w.name" width="1600" height="1000" loading="lazy" decoding="async">
           <div class="bd">
             <h3>{{ w.name }}</h3>

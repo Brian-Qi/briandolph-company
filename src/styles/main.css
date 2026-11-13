@@ -303,7 +303,7 @@ h2.blk-title { font-family: var(--font-display); font-size: clamp(26px, 1.2vw + 
 /* footer */
 .site-foot { background: var(--foot-bg); color: var(--muted); padding: clamp(40px, 5vw, 52px) 0 clamp(32px, 4vw, 40px); font-size: 14px; }
 .site-foot::before { content: ""; display: block; height: 1px; background: var(--divider); margin-top: calc(-1 * clamp(40px, 5vw, 52px)); margin-bottom: clamp(40px, 5vw, 52px); }
-.foot-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1.2fr); gap: var(--gap); align-items: start; }
+.foot-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: var(--gap); align-items: start; }
 .foot-grid h4 { color: var(--ink); font-size: 14px; margin: 0 0 14px; letter-spacing: .04em; }
 .foot-brand { display: flex; align-items: center; gap: 10px; }
 .foot-logo { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; flex: none; outline: 1px solid var(--ink); outline-offset: 2px; }
@@ -362,10 +362,43 @@ h2.blk-title { font-family: var(--font-display); font-size: clamp(26px, 1.2vw + 
   .site-foot { padding: 40px 0 32px; }
 }
 
-/* light-mode hero: static contour, no WebGL */
+/* light-mode hero */
 html[data-theme="light"] .hero-bg { display: none; }
+html[data-theme="light"] .hero .index {
+  color: transparent;
+  -webkit-text-stroke: 0;
+}
 html[data-theme="light"] .hero {
   background:
     radial-gradient(70% 55% at 78% 0%, rgba(14, 143, 163, 0.12), transparent 62%),
     linear-gradient(180deg, #f7fbfc 0%, var(--bg) 55%);
 }
+
+/* works page — 案例格子（复用首页 wcard） */
+.works-page .wcard img { height: clamp(160px, 24vh, 280px); }
+.wcard-more { display: inline-block; margin-top: 12px; font-size: 13px; font-weight: 600; color: var(--muted); transition: color .2s var(--ease); }
+.wcard:hover .wcard-more { color: var(--accent); }
+
+/* work detail */
+.work-detail { padding-top: clamp(24px, 3.5vw, 44px); }
+.work-back { padding-top: 0; }
+.back-link { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); transition: color .2s var(--ease); }
+.back-link:hover { color: var(--accent); }
+.work-detail .case { margin-top: 20px; margin-bottom: 0; }
+.work-missing { padding: clamp(24px, 4vw, 48px) 0; }
+.work-missing h1 { font-family: var(--font-display); font-size: clamp(28px, 1.4vw + 16px, 44px); margin: 0 0 12px; color: var(--ink); }
+.work-missing p { margin: 0 0 20px; color: var(--muted); }
+
+/* page hero stays behind the content for the hero-to-content transition */
+.route-page > .page-hero { position: sticky; top: 72px; z-index: 0; }
+.route-page > .page-hero ~ .blk { position: relative; z-index: 1; background: var(--bg); }
+.route-page > .page-hero + .blk {
+  border-radius: 28px 28px 0 0;
+  box-shadow: 0 -24px 64px rgba(0, 0, 0, 0.24);
+  overflow: hidden;
+}
+
+/* page hero light placeholder */
+html[data-theme="light"] .page-hero { background: #f7fbfc; }
+html[data-theme="light"] .page-hero__light { display: block; }
+

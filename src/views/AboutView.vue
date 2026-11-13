@@ -1,10 +1,5 @@
 <template>
-  <div class="page-head">
-    <div class="wrap">
-      <h1>关于我们</h1>
-      <p class="sub">{{ co.en }} · 一家专注游戏、数字内容与软件的交付型技术工作室。</p>
-    </div>
-  </div>
+  <PageHero index="01" eyebrow="ABOUT" effect="aero" title="关于我们" :subtitle="co.en + ' · 一家专注游戏、数字内容与软件的交付型技术工作室'" />
 
   <section class="blk">
     <div class="wrap">
@@ -39,27 +34,9 @@
     </div>
   </section>
 
-  <section class="blk">
-    <div class="wrap">
-      <h2 class="blk-title">工商登记信息</h2>
-      <p class="lead">以下信息以市场监督管理部门登记为准。</p>
-      <table class="info-table">
-        <tbody>
-          <tr><th>主体名称</th><td>{{ co.name }}</td></tr>
-          <tr><th>类型</th><td>{{ co.type }}（{{ co.form }}）</td></tr>
-          <tr><th>经营者</th><td>{{ co.operator }}</td></tr>
-          <tr><th>统一社会信用代码</th><td class="mono">{{ co.creditCode }}</td></tr>
-          <tr><th>注册号</th><td class="mono">{{ co.regNo }}</td></tr>
-          <tr><th>成立日期</th><td>{{ co.founded }}</td></tr>
-          <tr><th>登记机关</th><td>{{ co.authority }}</td></tr>
-          <tr><th>登记状态</th><td class="status">{{ co.status }}</td></tr>
-          <tr><th>经营场所</th><td>{{ co.address }}</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
 </template>
 
 <script setup>
+import PageHero from '../components/PageHero.vue'
 import co from '../data/company'
 </script>
