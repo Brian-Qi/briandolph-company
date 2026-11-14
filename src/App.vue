@@ -10,12 +10,14 @@
     </RouterView>
   </main>
   <SiteFooter />
+  <BackToTop />
 </template>
 
 <script setup>
 import { useRoute } from 'vue-router'
 import SiteHeader from './components/SiteHeader.vue'
 import SiteFooter from './components/SiteFooter.vue'
+import BackToTop from './components/BackToTop.vue'
 import { useSectionScroll } from './composables/sectionScroll'
 
 // 分区步进滚动仅作用于首页

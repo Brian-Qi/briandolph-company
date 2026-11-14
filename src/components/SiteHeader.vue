@@ -46,12 +46,35 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, nextTick } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 const route = useRoute()
 const open = ref(false)
 const isLight = ref(false)
-onMounted(() => { isLight.value = document.documentElement.getAttribute('data-theme') === 'light' })
+let systemMedia = null
+
+function followSystem() {
+  if (!systemMedia) return
+  try {
+    if (localStorage.getItem('theme')) return
+  } catch (e) {}
+  isLight.value = systemMedia.matches
+  if (systemMedia.matches) document.documentElement.setAttribute('data-theme', 'light')
+  else document.documentElement.removeAttribute('data-theme')
+}
+
+onMounted(() => {
+  isLight.value = document.documentElement.getAttribute('data-theme') === 'light'
+  systemMedia = window.matchMedia('(prefers-color-scheme: light)')
+  if (systemMedia.addEventListener) systemMedia.addEventListener('change', followSystem)
+  else systemMedia.addListener?.(followSystem)
+})
+
+onBeforeUnmount(() => {
+  if (!systemMedia) return
+  if (systemMedia.removeEventListener) systemMedia.removeEventListener('change', followSystem)
+  else systemMedia.removeListener?.(followSystem)
+})
 function applyTheme(t, e) {
   if ((t === 'light') === isLight.value) return
   const el = e && e.currentTarget ? e.currentTarget : null

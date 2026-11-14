@@ -19,6 +19,7 @@
         <slot />
       </div>
     </div>
+    <ScrollHint class="page-hero__hint" label="SCROLL" />
   </section>
 </template>
 
@@ -28,6 +29,7 @@ import AeroShardsMount from './AeroShardsMount.vue'
 import GhostFibersMount from './GhostFibersMount.vue'
 import WebThreadsMount from './WebThreadsMount.vue'
 import ParticlesMount from './ParticlesMount.vue'
+import ScrollHint from './ScrollHint.vue'
 
 defineProps({
   title: { type: String, required: true },
@@ -174,6 +176,14 @@ onBeforeUnmount(() => {
     radial-gradient(65% 58% at 18% 16%, rgba(14, 143, 163, 0.16), transparent 66%),
     radial-gradient(50% 50% at 82% 72%, rgba(85, 255, 120, 0.08), transparent 65%),
     linear-gradient(135deg, #f7fbfc 0%, #eef4f7 52%, #fbfbfc 100%);
+}
+
+.page-hero__hint {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  z-index: 2;
+  transform: translateX(-50%);
 }
 
 .page-hero__inner {

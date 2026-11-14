@@ -81,6 +81,8 @@
       ></button>
     </div>
 
+    <ScrollHint class="hero__hint" label="SCROLL" />
+
   </section>
 </template>
 
@@ -88,6 +90,7 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import HeroStrokeNumber from './HeroStrokeNumber.vue'
 import HeroTechNumber from './HeroTechNumber.vue'
+import ScrollHint from './ScrollHint.vue'
 
 const slides = [
   {
@@ -380,6 +383,14 @@ onBeforeUnmount(() => {
 .side.next { right: 30px; }
 
 /* 线段式指示器 */
+.hero__hint {
+  position: absolute;
+  left: 50%;
+  bottom: 78px;
+  z-index: 3;
+  transform: translateX(-50%);
+}
+
 .dots {
   position: absolute;
   left: 50%;
@@ -426,6 +437,7 @@ onBeforeUnmount(() => {
   .btns { margin-top: 28px; }
   .side { display: none; }
   .dots { bottom: 22px; }
+  .hero__hint { bottom: 66px; }
   .slide-media img { object-position: 66% center; }
 }
 </style>
