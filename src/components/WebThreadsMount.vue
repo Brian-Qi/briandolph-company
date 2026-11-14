@@ -20,7 +20,7 @@ onMounted(() => {
       coreColor: '#ffffff',
       backgroundColor: 'transparent',
       lightMode: false,
-      threadCount: 16,
+      threadCount: 10,
       speed: 0.2,
       frequency: 7.2,
       spread: 0.3,
@@ -44,7 +44,8 @@ onMounted(() => {
       mouseInteraction: true,
       mouseStrength: 0.42,
       pulseOnClick: false,
-      dpr: 1
+      fps: 30,
+      dpr: 0.7
     })
   )
 })

@@ -963,6 +963,7 @@ export default function AeroShards({
   holdToGather = true,
   parallax = 0.5,
   paused = false,
+  fps = 0,
   dpr = 2,
   className = '',
   style,
@@ -998,6 +999,7 @@ export default function AeroShards({
     holdToGather,
     parallax: clamp(parallax, 0, 1),
     paused,
+    fps: Math.max(0, fps),
     dpr: Math.max(0.5, dpr)
   };
   const settingsRef = useRef(settings);
@@ -1253,6 +1255,7 @@ export default function AeroShards({
         visible: false,
         clock: 0,
         last: 0,
+        lastFrame: 0,
         travel: new Float64Array(LEVELS),
         roll: 0,
         twist: 0,
@@ -1952,6 +1955,9 @@ export default function AeroShards({
           return;
         }
         const s = settingsRef.current;
+        const frameMs = s.fps > 0 ? 1000 / s.fps : 0;
+        if (frameMs && now - state.lastFrame < frameMs - 1) return;
+        state.lastFrame = now;
         const dt = state.last ? Math.min((now - state.last) / 1000, 0.05) : 0;
         state.last = now;
         const reduced = prefersReduced();

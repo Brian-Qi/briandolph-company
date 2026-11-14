@@ -329,6 +329,7 @@ export default function WebThreads({
   mouseStrength = 0.5,
   pulseOnClick = true,
   paused = false,
+  fps = 0,
   dpr = 2,
   className = '',
   style
@@ -376,6 +377,7 @@ export default function WebThreads({
     mouseStrength: clamp(mouseStrength, 0, 1),
     pulseOnClick,
     paused,
+    fps: Math.max(0, fps),
     dpr: Math.max(0.5, dpr)
   };
   const settingsRef = useRef(settings);
@@ -475,6 +477,7 @@ export default function WebThreads({
       phase: 0,
       clock: 0,
       last: 0,
+      lastFrame: 0,
       raf: 0,
       visible: false,
       introAt: -1,
@@ -592,6 +595,9 @@ export default function WebThreads({
         return;
       }
       const s = settingsRef.current;
+      const frameMs = s.fps > 0 ? 1000 / s.fps : 0;
+      if (frameMs && now - state.lastFrame < frameMs - 1) return;
+      state.lastFrame = now;
       const dt = state.last ? Math.min((now - state.last) / 1000, 0.1) : 1 / 60;
       state.last = now;
       const reduced = prefersReduced();

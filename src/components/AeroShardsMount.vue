@@ -32,7 +32,8 @@ onMounted(() => {
       glow: 1.46,
       markers: 'none',
       pulseOnClick: false,
-      dpr: 1.25
+      fps: 30,
+      dpr: 1
     })
   )
 })

@@ -2,6 +2,16 @@
 
 Vue 3 + Vite 单页应用（SPA）。源码目录 `src/`，静态资源 `public/`。
 
+## 发布三端（固定）
+
+本项目每次发布固定同步三端，三者是同一版本：
+
+1. 线上站点：https://briandolph.xyz/ （Nginx 静态站，服务器根目录）
+2. GitHub：https://github.com/Brian-Qi/briandolph-company （main）
+3. Gitee：https://gitee.com/Brian-Qi/briandolph-company （main）
+
+“三端”= 线上服务器 + GitHub 源码镜像 + Gitee 源码镜像，不是三个独立网站。发布流程：`npm run build` → 部署线上 → 同一提交推送 GitHub/Gitee。
+
 ## 开发 / 构建
 
 ```bash
