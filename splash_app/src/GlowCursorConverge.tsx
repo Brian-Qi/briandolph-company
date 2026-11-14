@@ -1221,6 +1221,7 @@ const GlowCursorConverge = ({
     document.addEventListener('visibilitychange', onVisibility);
     resize();
     blank();
+    wake();
 
     return () => {
       alive = false;
