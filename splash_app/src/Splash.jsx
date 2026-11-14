@@ -7,6 +7,12 @@ import nameImg from './assets/biyu-name.png'
 const Splash = ({ onDone }) => {
   const [merged, setMerged] = useState(false)
 
+  // Never leave the splash as a black frame if the WebGL reveal stalls.
+  useEffect(() => {
+    const timer = window.setTimeout(() => setMerged(true), 1000)
+    return () => window.clearTimeout(timer)
+  }, [])
+
   useEffect(() => {
     const timer = window.setTimeout(() => onDone?.(), 9000)
     return () => window.clearTimeout(timer)
