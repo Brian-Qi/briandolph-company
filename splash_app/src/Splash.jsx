@@ -36,11 +36,6 @@ const Splash = ({ onDone }) => {
 
   return (
     <div className="biyu-splash">
-      <div className="biyu-fallback" aria-hidden="true">
-        <img className="biyu-fallback-logo" src={logo} alt="" />
-        <img className="biyu-fallback-name" src={nameImg} alt="" />
-      </div>
-
       <GlowCursorConverge
         color="#7e0000"
         secondaryColor="#7e0000"
