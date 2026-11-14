@@ -7,6 +7,8 @@
       <ParticlesMount v-else-if="isDark && !scrolledAway && effect === 'particles'" />
       <div v-else-if="isDark" class="page-hero__dark"></div>
       <div class="page-hero__light"></div>
+      <img v-if="lightImage && !isDark" class="page-hero__image" :src="lightImage" alt="" />
+      <div v-if="lightImage && !isDark" class="page-hero__image-scrim"></div>
     </div>
 
     <div class="wrap page-hero__inner">
@@ -35,6 +37,7 @@ defineProps({
   title: { type: String, required: true },
   subtitle: { type: String, default: '' },
   effect: { type: String, default: 'none' },
+  lightImage: { type: String, default: '' },
   eyebrow: { type: String, default: '' }
 })
 
@@ -168,14 +171,31 @@ onBeforeUnmount(() => {
     linear-gradient(135deg, #060a0c 0%, #0a1215 55%, #060a0c 100%);
 }
 
+.page-hero__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 72% center;
+  z-index: 0;
+}
+
+.page-hero__image-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(0deg, #fbfbfc 0%, rgba(251, 251, 252, 0.94) 16%, rgba(251, 251, 252, 0.58) 38%, rgba(251, 251, 252, 0) 72%);
+}
+
 .page-hero__light {
   display: none;
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(65% 58% at 18% 16%, rgba(14, 143, 163, 0.16), transparent 66%),
-    radial-gradient(50% 50% at 82% 72%, rgba(85, 255, 120, 0.08), transparent 65%),
-    linear-gradient(135deg, #f7fbfc 0%, #eef4f7 52%, #fbfbfc 100%);
+    radial-gradient(50% 55% at 82% 72%, rgba(85, 255, 120, 0.07), transparent 65%),
+    linear-gradient(0deg, #f7fbfc 0%, #eef4f7 46%, #fbfbfc 100%);
 }
 
 .page-hero__hint {

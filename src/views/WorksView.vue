@@ -1,5 +1,5 @@
 <template>
-  <PageHero eyebrow="WORKS" effect="particles" title="代表案例" subtitle="已上线的真实项目，点开查看详情。" />
+  <PageHero eyebrow="WORKS" effect="particles" light-image="/hero/page-works-light.webp" title="代表案例" subtitle="已上线的真实项目，点开查看详情。" />
 
   <section class="blk works-page">
     <div class="wrap">
