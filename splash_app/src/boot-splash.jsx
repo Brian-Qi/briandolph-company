@@ -33,7 +33,7 @@ const whenSiteReady = cb => {
     window.setTimeout(cb, 260)
   }
   window.addEventListener('load', go, { once: true })
-  window.setTimeout(go, 12000)
+  window.setTimeout(go, 2500)
 }
 
 const injectStyle = () => {
