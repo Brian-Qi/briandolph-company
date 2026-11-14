@@ -8,10 +8,10 @@
         <div v-if="hasWechat" class="panel">
           <div class="label">
             <span class="label-icon" v-html="wechatIcon" aria-hidden="true"></span>
-            微信（首选）
+            微信
           </div>
           <h3>{{ co.wechat }}</h3>
-          <p>首选联系方式，添加时请简要说明来意。</p>
+          <p>添加时请简要说明来意。</p>
         </div>
         <a class="panel" :href="'mailto:' + co.email">
           <div class="label">
@@ -19,7 +19,7 @@
             邮箱
           </div>
           <h3>{{ co.email }}</h3>
-          <p>15 个工作日内回复。</p>
+          <p>通常 15 个工作日内回复。</p>
         </a>
         <a v-if="hasPhone" class="panel" :href="'tel:' + co.phone">
           <div class="label">
