@@ -15,7 +15,7 @@
 .biyu-fallback {
   position: absolute;
   inset: 0;
-  z-index: 0;
+  z-index: 2;
   display: grid;
   place-items: center;
   pointer-events: none;
@@ -44,7 +44,7 @@
 .biyu-stage {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 3;
   display: grid;
   place-items: center;
   pointer-events: none;
