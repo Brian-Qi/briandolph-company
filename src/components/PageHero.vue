@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <section class="page-hero" :style="{ '--hero-p': heroProgress }">
     <div class="page-hero__bg" aria-hidden="true">
       <AeroShardsMount v-if="isDark && !scrolledAway && effect === 'aero'" />
@@ -18,7 +18,6 @@
         <p class="sub">{{ subtitle }}</p>
         <slot />
       </div>
-      <div v-if="index" class="page-hero__mark" aria-hidden="true">{{ index }}</div>
     </div>
   </section>
 </template>
@@ -34,8 +33,7 @@ defineProps({
   title: { type: String, required: true },
   subtitle: { type: String, default: '' },
   effect: { type: String, default: 'none' },
-  eyebrow: { type: String, default: '' },
-  index: { type: String, default: '' }
+  eyebrow: { type: String, default: '' }
 })
 
 const HEADER = 72
@@ -235,21 +233,6 @@ onBeforeUnmount(() => {
   line-height: 1.8;
 }
 
-.page-hero__mark {
-  align-self: end;
-  padding-bottom: 0.04em;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--hero-index);
-  font-family: var(--font-display);
-  font-size: clamp(120px, 18vw, 280px);
-  line-height: 0.74;
-  font-weight: 900;
-  letter-spacing: -0.06em;
-  opacity: 0.75;
-  user-select: none;
-  white-space: nowrap;
-}
-
 :global(html[data-theme="light"]) .page-hero {
   background: #f7fbfc;
 }
@@ -267,15 +250,6 @@ onBeforeUnmount(() => {
 
   .page-hero__copy {
     max-width: none;
-  }
-
-  .page-hero__mark {
-    position: absolute;
-    right: 6vw;
-    bottom: 6vh;
-    font-size: clamp(100px, 30vw, 180px);
-    opacity: 0.18;
-    pointer-events: none;
   }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <PageHero index="04" eyebrow="CONTACT" effect="web-threads" title="联系我们" subtitle="无论是新项目立项还是合作洽谈，欢迎联系我们。" />
+  <PageHero eyebrow="CONTACT" effect="web-threads" title="联系我们" subtitle="无论是新项目立项还是合作洽谈，欢迎联系我们。" />
 
   <section class="blk">
     <div class="wrap">

@@ -1,5 +1,5 @@
 <template>
-  <PageHero index="02" eyebrow="SERVICES" effect="ghost" title="核心业务" subtitle="从创意到上线，按技术能力划分为四大交付方向。" />
+  <PageHero eyebrow="SERVICES" effect="ghost" title="核心业务" subtitle="从创意到上线，按技术能力划分为四大交付方向。" />
 
   <section class="blk">
     <div class="wrap">
