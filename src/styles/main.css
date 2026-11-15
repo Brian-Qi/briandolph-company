@@ -94,6 +94,8 @@
   --head-line-h: 2px;
   --menu-bg: #ffffff;
   --foot-bg: #f3f4f7;
+  --mark-filter: invert(1);
+  --mark-outline: #ffffff;
 }
 
 * { box-sizing: border-box; }
@@ -167,8 +169,12 @@ h1.blk-title, h2.blk-title { font-family: var(--font-display); font-size: clamp(
 .brand { display: flex; align-items: center; gap: 12px; padding: 8px 0; font-weight: 700; letter-spacing: .02em; color: var(--head-fg-strong); }
 /* 品牌标准字：只留 alpha 通道，颜色走 currentColor，深浅主题自动适配 */
 .brand-name { display: inline-block; width: 79px; height: 38px; background: currentColor; -webkit-mask: url(/brand/name-alpha.png) center / contain no-repeat; mask: url(/brand/name-alpha.png) center / contain no-repeat; }
-.mark { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; display: block; flex: none; outline: 1px solid var(--head-fg-strong); outline-offset: 2px; transition: outline-color .2s ease; }
+.mark { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; display: block; flex: none; outline: 1px solid var(--mark-outline, var(--head-fg-strong)); outline-offset: 2px; filter: var(--mark-filter, none); transition: outline-color .2s ease; }
 .brand:hover .mark { outline-color: var(--accent); }
+/* logo.svg 是「白底 + 黑图案」的固定双色，浅色主题下白底会和背景糊在一起。
+   反色通过变量下发，避免 filter 与其它规则抢优先级；outline 也会被 invert 翻转，
+   所以浅色下给白边，翻过来正好是黑边。 */
+[data-theme="light"] .brand:hover .mark { outline-color: var(--accent); }
 .menu { display: flex; gap: clamp(18px, 2.2vw, 30px); margin: 0 0 0 auto; padding: 0; list-style: none; color: var(--head-fg); font-size: 15px; }
 .menu a { display: inline-block; width: 84px; padding: 12px 0; text-align: center; color: var(--head-fg); }
 .menu a:hover { color: var(--head-fg-strong); }
@@ -337,7 +343,7 @@ h1.blk-title, h2.blk-title { font-family: var(--font-display); font-size: clamp(
 .foot-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: var(--gap); align-items: start; }
 .foot-grid h4 { color: var(--ink); font-size: 14px; margin: 0 0 14px; letter-spacing: .04em; }
 .foot-brand { display: flex; align-items: center; gap: 10px; }
-.foot-logo { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; flex: none; outline: 1px solid var(--ink); outline-offset: 2px; }
+.foot-logo { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; flex: none; outline: 1px solid var(--mark-outline, var(--ink)); outline-offset: 2px; filter: var(--mark-filter, none); }
 .foot-desc { margin: 0; color: var(--ink2); line-height: 1.8; max-width: 36em; }
 .foot-line { display: flex; justify-content: space-between; gap: 16px; border-bottom: 1px solid var(--divider); padding: 7px 0; }
 .foot-line span { color: var(--muted); }
