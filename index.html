@@ -127,18 +127,34 @@
           return el;
         }
 
-        addScript(
-          '/splash/vendor.js',
-          function () {
-            addScript('/splash/cursor.js', null, function () {});
-            if (force || !seen) {
-              addScript('/splash/splash.js', null, dismissBoot);
-            } else {
-              whenSiteReady(dismissBoot);
-            }
-          },
-          dismissBoot
-        );
+        var needSplash = force || !seen;
+
+        var coarse = false;
+        var reduce = false;
+        try {
+          coarse = window.matchMedia('(pointer: coarse)').matches;
+          reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        } catch (e) {}
+        // 自定义光标（含其依赖的 React vendor）在触屏 / 减动效环境下没有意义，
+        // 整条 splash 资源链都不必下载。
+        var needCursor = !coarse && !reduce;
+
+        if (!needSplash && !needCursor) {
+          whenSiteReady(dismissBoot);
+        } else {
+          addScript(
+            '/splash/vendor.js',
+            function () {
+              if (needCursor) addScript('/splash/cursor.js', null, function () {});
+              if (needSplash) {
+                addScript('/splash/splash.js', null, dismissBoot);
+              } else {
+                whenSiteReady(dismissBoot);
+              }
+            },
+            dismissBoot
+          );
+        }
 
         window.setTimeout(dismissBoot, 15000);
       })();

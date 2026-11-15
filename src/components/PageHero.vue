@@ -1,10 +1,7 @@
 <template>
   <section class="page-hero" :style="{ '--hero-p': heroProgress }">
     <div class="page-hero__bg" aria-hidden="true">
-      <AeroShardsMount v-if="isDark && !scrolledAway && effect === 'aero'" />
-      <GhostFibersMount v-else-if="isDark && !scrolledAway && effect === 'ghost'" />
-      <WebThreadsMount v-else-if="isDark && !scrolledAway && effect === 'web-threads'" />
-      <ParticlesMount v-else-if="isDark && !scrolledAway && effect === 'particles'" />
+      <component :is="activeMount" v-if="isDark && !scrolledAway && activeMount" />
       <div v-else-if="isDark" class="page-hero__dark"></div>
       <div class="page-hero__light"></div>
       <img v-if="lightImage && !isDark" class="page-hero__image" :src="lightImage" alt="" />
@@ -26,20 +23,27 @@
 </template>
 
 <script setup>
-import { onBeforeUnmount, onMounted, ref } from 'vue'
-import AeroShardsMount from './AeroShardsMount.vue'
-import GhostFibersMount from './GhostFibersMount.vue'
-import WebThreadsMount from './WebThreadsMount.vue'
-import ParticlesMount from './ParticlesMount.vue'
+import { computed, defineAsyncComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import ScrollHint from './ScrollHint.vue'
 
-defineProps({
+const props = defineProps({
   title: { type: String, required: true },
   subtitle: { type: String, default: '' },
   effect: { type: String, default: 'none' },
   lightImage: { type: String, default: '' },
   eyebrow: { type: String, default: '' }
 })
+
+// 四个特效各自异步成 chunk：每个内页只下载自己那一个，
+// 避免把四个特效 + React 运行时一起塞进公共 chunk（曾达 458 KB）。
+const effectMounts = {
+  aero: defineAsyncComponent(() => import('./AeroShardsMount.vue')),
+  ghost: defineAsyncComponent(() => import('./GhostFibersMount.vue')),
+  'web-threads': defineAsyncComponent(() => import('./WebThreadsMount.vue')),
+  particles: defineAsyncComponent(() => import('./ParticlesMount.vue'))
+}
+
+const activeMount = computed(() => effectMounts[props.effect] || null)
 
 const HEADER = 72
 const SNAP_LOCK_MS = 650
