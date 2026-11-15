@@ -1,6 +1,6 @@
 import works from './works.js'
 
-export const SITE = 'https://briandolph.xyz'
+export const SITE = 'https://www.briandolph.xyz'
 
 const staticRoutes = [
   {
