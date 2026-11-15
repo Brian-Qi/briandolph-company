@@ -1,4 +1,4 @@
-# 公司站部署（本机上传 + 远程执行）
+﻿# 公司站部署（本机上传 + 远程执行）
 # 仅在收到部署指令后运行。
 # 默认 root：线上根 /var/www/briandolph，保留 self / arg_01
 # 可选 independent：独立目录 /var/www/briandolph-company
@@ -13,7 +13,9 @@ $ErrorActionPreference = 'Stop'
 $HostName = '8.138.98.217'
 $User = 'root'
 $Key = 'C:\Users\sjyam\password\开发服务器.pem'
-$Repo = 'F:\彼岸时墟\公司站\briandolph_company_bg'
+# 用脚本自身所在目录，避免硬编码中文路径：
+# Windows PowerShell 5.1 会把无 BOM 的脚本按 GBK 解码，中文字面量会变乱码导致找不到文件。
+$Repo = $PSScriptRoot
 $Tgz = Join-Path $Repo 'company_dist.tgz'
 
 $scriptName = if ($Target -eq 'root') { 'deploy_company_root.sh' } else { 'deploy_company_server.sh' }
