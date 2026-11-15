@@ -169,6 +169,12 @@ h1.blk-title, h2.blk-title { font-family: var(--font-display); font-size: clamp(
 .brand { display: flex; align-items: center; gap: 12px; padding: 8px 0; font-weight: 700; letter-spacing: .02em; color: var(--head-fg-strong); }
 /* 品牌标准字：只留 alpha 通道，颜色走 currentColor，深浅主题自动适配 */
 .brand-name { display: inline-block; width: 79px; height: 38px; background: currentColor; -webkit-mask: url(/brand/name-alpha.png) center / contain no-repeat; mask: url(/brand/name-alpha.png) center / contain no-repeat; }
+/* 浅色主题改用金属破碎感那版（设计给的 3D 渲染稿抠图），不再用纯色 */
+[data-theme="light"] .brand-name {
+  background: transparent url(/brand/name-metal.png) center / contain no-repeat;
+  -webkit-mask: none;
+  mask: none;
+}
 .mark { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; display: block; flex: none; outline: 1px solid var(--mark-outline, var(--head-fg-strong)); outline-offset: 2px; filter: var(--mark-filter, none); transition: outline-color .2s ease; }
 .brand:hover .mark { outline-color: var(--accent); }
 /* logo.svg 是「白底 + 黑图案」的固定双色，浅色主题下白底会和背景糊在一起。
