@@ -19,6 +19,11 @@ echo "backup: /root/company_backup_$TS.tgz"
 find "$ROOT" -maxdepth 1 -mindepth 1 ! -name self ! -name arg_01 -exec rm -rf {} +
 cp -a /tmp/company_new/. "$ROOT"/
 
+# 权限归一：站点只需读，禁止其他人写（历史上出现过 777，任何进程都能改首页）
+chmod 755 "$ROOT"
+find "$ROOT" -maxdepth 1 -mindepth 1 ! -name self ! -name arg_01 \
+  -exec chmod -R u+rwX,go+rX,go-w {} +
+
 echo "DEPLOYED company to $ROOT (self/arg_01 preserved)"
 grep -o 'assets/index-[A-Za-z0-9_-]*\.js' "$ROOT/index.html" || true
 ls "$ROOT"
