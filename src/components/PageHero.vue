@@ -218,16 +218,15 @@ onBeforeUnmount(() => {
   position: relative;
   z-index: 1;
   min-height: calc(100dvh - var(--head-h));
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: end;
-  column-gap: clamp(28px, 6vw, 120px);
-  padding-top: clamp(110px, 18vh, 220px);
-  padding-bottom: clamp(52px, 9vh, 120px);
+  /* 用 flex 而不是 grid：grid 的 align-items 只作用于行内，
+     行高等于内容高，容器再高也不会真正垂直居中 */
+  display: flex;
+  align-items: center;
+  padding-top: clamp(96px, 14vh, 180px);
+  padding-bottom: clamp(96px, 14vh, 180px);
 }
 
 .page-hero__copy {
-  align-self: end;
   max-width: min(48rem, 62vw);
 }
 
@@ -281,9 +280,10 @@ onBeforeUnmount(() => {
 
 @media (max-width: 900px) {
   .page-hero__inner {
-    display: block;
-    padding-top: clamp(100px, 16vh, 180px);
-    padding-bottom: clamp(48px, 8vh, 92px);
+    display: flex;
+    align-items: center;
+    padding-top: clamp(88px, 14vh, 150px);
+    padding-bottom: clamp(88px, 14vh, 150px);
   }
 
   .page-hero__copy {
