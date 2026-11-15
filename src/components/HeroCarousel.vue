@@ -235,12 +235,16 @@ onBeforeUnmount(() => {
 <style scoped>
 .hero {
   position: relative;
-  height: calc(100dvh - 72px);
+  height: calc(100dvh - var(--head-h));
   min-height: 560px;
   overflow: hidden;
   background: var(--bg);
   border-bottom: 1px solid var(--divider);
+  user-select: none;
+  -webkit-user-select: none;
 }
+/* 轮播的图和字不参与选中/拖拽 */
+.hero img { -webkit-user-drag: none; user-drag: none; }
 .hero-bg {
   position: absolute;
   inset: 0;
@@ -429,7 +433,7 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 900px) {
-  .hero { height: calc(100dvh - 72px); min-height: 480px; }
+  .hero { height: calc(100dvh - var(--head-h)); min-height: 480px; }
   .index { display: none; }
   .copy-block { max-width: none; }
   .title { font-size: clamp(30px, 8.4vw, 46px); }

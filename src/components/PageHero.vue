@@ -157,7 +157,11 @@ onBeforeUnmount(() => {
     radial-gradient(55% 55% at 78% 74%, rgba(85, 255, 120, 0.06), transparent 64%),
     linear-gradient(135deg, #060a0c 0%, #0a1215 55%, #060a0c 100%);
   border-bottom: 1px solid var(--divider);
+  user-select: none;
+  -webkit-user-select: none;
 }
+/* 内页 hero 的图和字不参与选中/拖拽 */
+.page-hero img { -webkit-user-drag: none; user-drag: none; }
 
 .page-hero__bg {
   position: absolute;
