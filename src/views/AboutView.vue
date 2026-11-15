@@ -4,14 +4,8 @@
   <section class="blk">
     <div class="wrap">
       <h2 class="blk-title">公司简介</h2>
-      <p class="lead">
-        {{ co.name }} 成立于 {{ co.founded }}，是一家以 {{ co.form }} 形式登记的{{ co.type }}，
-        聚焦游戏开发、软件与数据服务、AI 应用三大方向。
-      </p>
-      <p class="lead">
-        团队「小而完整」：从需求、设计、开发到上线独立走完全流程，不外包、不转包，
-        交付快、质量稳、长期可维护。
-      </p>
+      <p class="lead">{{ co.name }}成立于 {{ co.founded }}，是一家以{{ co.form }}形式登记的{{ co.type }}，聚焦游戏开发、软件与数据服务、AI 应用、技术服务四大方向。</p>
+      <p class="lead">团队「小而完整」：从需求、设计、开发到上线独立走完全流程，不外包、不转包，交付快、质量稳、长期可维护。</p>
     </div>
   </section>
 
