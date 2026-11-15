@@ -46,7 +46,6 @@ const effectMounts = {
 const activeMount = computed(() => effectMounts[props.effect] || null)
 
 const HEADER = 60
-const SNAP_LOCK_MS = 650
 const MIN_DELTA = 24
 
 const isDark = ref(true)
@@ -56,7 +55,7 @@ let observer = null
 let snapLocked = false
 let snapDir = 1
 let snapTarget = null
-let snapTimer = null
+let snapRaf = null
 
 function readTheme() {
   isDark.value = document.documentElement.getAttribute('data-theme') !== 'light'
@@ -77,22 +76,48 @@ function contentBoundary() {
 function unlockSnap() {
   snapLocked = false
   snapTarget = null
-  clearTimeout(snapTimer)
-  snapTimer = null
+  cancelGlide()
 }
 
+function cancelGlide() {
+  if (snapRaf != null) {
+    cancelAnimationFrame(snapRaf)
+    snapRaf = null
+  }
+}
+
+// 自己驱动滚动动画：可随时取消、结束时精确到位。
+// 原来用 scrollTo({behavior:'smooth'}) + 650ms 定时器硬跳，
+// 动画没跑完就跳、反向滚动时又取消不掉，会出现卡在半路。
 function glideSnap(target, dir) {
   snapLocked = true
   snapDir = dir
   snapTarget = Math.max(0, target)
-  window.scrollTo({ top: snapTarget, behavior: 'smooth' })
-  clearTimeout(snapTimer)
-  snapTimer = setTimeout(() => {
-    if (snapTarget != null && Math.abs(window.scrollY - snapTarget) > 2) {
-      window.scrollTo(0, snapTarget)
-    }
+  cancelGlide()
+
+  const start = window.scrollY
+  const dist = snapTarget - start
+  if (Math.abs(dist) < 1) {
     unlockSnap()
-  }, SNAP_LOCK_MS)
+    return
+  }
+
+  const duration = Math.min(560, Math.max(240, Math.abs(dist) * 0.5))
+  const t0 = performance.now()
+  const ease = t => 1 - Math.pow(1 - t, 3)
+
+  const step = now => {
+    const p = Math.min(1, (now - t0) / duration)
+    window.scrollTo(0, start + dist * ease(p))
+    if (p < 1) {
+      snapRaf = requestAnimationFrame(step)
+    } else {
+      snapRaf = null
+      window.scrollTo(0, snapTarget)
+      unlockSnap()
+    }
+  }
+  snapRaf = requestAnimationFrame(step)
 }
 
 function onWheel(event) {
@@ -103,21 +128,27 @@ function onWheel(event) {
   const dir = event.deltaY > 0 ? 1 : -1
   if (snapLocked) {
     if (dir !== snapDir) {
+      // 反向滚动：立刻放弃吸附，把控制权交还浏览器
       unlockSnap()
-    } else {
-      event.preventDefault()
       return
     }
+    event.preventDefault()
+    return
   }
 
   const y = window.scrollY
   const boundary = contentBoundary()
-  if (boundary == null) return
+  if (boundary == null || boundary <= 0) return
 
-  if (dir > 0 && y < 24 && boundary > y + 8) {
-    event.preventDefault()
-    glideSnap(boundary, dir)
-  } else if (dir < 0 && y > boundary - 8 && y < boundary + 48) {
+  if (dir > 0) {
+    // 还没离开 hero：直接送到内容块顶部，别停在半路
+    if (y < boundary - 8) {
+      event.preventDefault()
+      glideSnap(boundary, dir)
+    }
+  } else if (y < boundary + 48) {
+    // 向上：content 顶部附近要回到 hero 顶部；
+    // 已经滑进 hero 中间（上一帧滚过头了）也要拉回顶部，否则就卡在一半
     event.preventDefault()
     glideSnap(0, dir)
   }
@@ -137,7 +168,7 @@ onBeforeUnmount(() => {
   observer = null
   window.removeEventListener('scroll', readScroll)
   window.removeEventListener('wheel', onWheel)
-  clearTimeout(snapTimer)
+  cancelGlide()
 })
 </script>
 
