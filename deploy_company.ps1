@@ -13,7 +13,7 @@ $ErrorActionPreference = 'Stop'
 $HostName = '8.138.98.217'
 $User = 'root'
 $Key = 'C:\Users\sjyam\password\开发服务器.pem'
-$Repo = 'F:\彼岸时墟\公司站\briandolph_company_lab'
+$Repo = 'F:\彼岸时墟\公司站\briandolph_company_bg'
 $Tgz = Join-Path $Repo 'company_dist.tgz'
 
 $scriptName = if ($Target -eq 'root') { 'deploy_company_root.sh' } else { 'deploy_company_server.sh' }
