@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { metaForRoute, SITE, urlForPath } from '../data/seo.js'
 
 const HomeView = () => import('../views/HomeView.vue')
 const AboutView = () => import('../views/AboutView.vue')
@@ -9,13 +10,13 @@ const ContactView = () => import('../views/ContactView.vue')
 const NotFound = () => import('../views/NotFound.vue')
 
 const routes = [
-  { path: '/', name: 'home', component: HomeView, meta: { title: '彼岸时墟游戏工作室 · 游戏开发 · 数字内容', desc: '游戏开发、数字内容、软件与数据服务，从创意到上线一站式交付。' } },
-  { path: '/about', name: 'about', component: AboutView, meta: { title: '关于我们 · 彼岸时墟', desc: '专注游戏、数字内容与软件的交付型技术工作室，不外包、不转包。' } },
-  { path: '/services', name: 'services', component: ServicesView, meta: { title: '核心业务 · 彼岸时墟', desc: '游戏与数字内容、软件与数据服务、AI 与前沿技术、技术服务四大交付方向。' } },
-  { path: '/works', name: 'works', component: WorksView, meta: { title: '代表案例 · 彼岸时墟', desc: '已上线的真实项目，含网页互动解谜《第五张财签》。' } },
-  { path: '/works/:id', name: 'work', component: WorkDetailView, meta: { title: '代表案例 · 彼岸时墟', desc: '已上线的真实项目，含网页互动解谜《第五张财签》。' } },
-  { path: '/contact', name: 'contact', component: ContactView, meta: { title: '联系我们 · 彼岸时墟', desc: '项目合作与技术咨询，24 小时内响应。' } },
-  { path: '/:pathMatch(.*)*', name: 'notfound', component: NotFound, meta: { title: '页面不存在 · 彼岸时墟', desc: '页面不存在。' } }
+  { path: '/', name: 'home', component: HomeView },
+  { path: '/about', name: 'about', component: AboutView },
+  { path: '/services', name: 'services', component: ServicesView },
+  { path: '/works', name: 'works', component: WorksView },
+  { path: '/works/:id', name: 'work', component: WorkDetailView },
+  { path: '/contact', name: 'contact', component: ContactView },
+  { path: '/:pathMatch(.*)*', name: 'notfound', component: NotFound }
 ]
 
 const router = createRouter({
@@ -27,21 +28,83 @@ const router = createRouter({
   }
 })
 
-const DEFAULT_DESC = '彼岸时墟游戏工作室 —— 游戏开发、数字内容、软件与数据服务，从创意到上线一站式交付。'
-
-function setDescription(content) {
-  let el = document.querySelector('meta[name="description"]')
+function setMeta(attr, key, content) {
+  let el = document.head.querySelector(`meta[${attr}="${key}"]`)
   if (!el) {
     el = document.createElement('meta')
-    el.setAttribute('name', 'description')
+    el.setAttribute(attr, key)
     document.head.appendChild(el)
   }
   el.setAttribute('content', content)
 }
 
+function removeMeta(attr, key) {
+  document.head.querySelector(`meta[${attr}="${key}"]`)?.remove()
+}
+
+function setCanonical(href) {
+  let el = document.head.querySelector('link[rel="canonical"]')
+  if (!href) {
+    el?.remove()
+    return
+  }
+  if (!el) {
+    el = document.createElement('link')
+    el.setAttribute('rel', 'canonical')
+    document.head.appendChild(el)
+  }
+  el.setAttribute('href', href)
+}
+
+function setRobots(noindex) {
+  if (!noindex) {
+    removeMeta('name', 'robots')
+    return
+  }
+  setMeta('name', 'robots', 'noindex')
+}
+
+function applyRouteMeta(to) {
+  const meta = metaForRoute(to)
+  const url = urlForPath(meta.path)
+  const image = meta.og ? `${SITE}${meta.og}` : ''
+
+  document.title = meta.title
+  setMeta('name', 'description', meta.description)
+  setMeta('property', 'og:title', meta.title)
+  setMeta('property', 'og:description', meta.description)
+  setMeta('name', 'twitter:title', meta.title)
+  setMeta('name', 'twitter:description', meta.description)
+
+  if (meta.noindex) {
+    setRobots(true)
+    setCanonical(null)
+    removeMeta('property', 'og:url')
+    removeMeta('property', 'og:image')
+    removeMeta('property', 'og:image:alt')
+    removeMeta('name', 'twitter:image')
+    return
+  }
+
+  setRobots(false)
+  setCanonical(url)
+  setMeta('property', 'og:url', url)
+  setMeta('property', 'og:image', image)
+  setMeta('property', 'og:image:type', 'image/jpeg')
+  setMeta('property', 'og:image:width', '1200')
+  setMeta('property', 'og:image:height', '630')
+  setMeta('property', 'og:image:alt', meta.title)
+  setMeta('name', 'twitter:image', image)
+}
+
+router.beforeEach((to) => {
+  if (to.name !== 'notfound' && to.path !== '/' && !to.path.endsWith('/')) {
+    return { path: `${to.path}/`, query: to.query, hash: to.hash, replace: true }
+  }
+})
+
 router.afterEach((to) => {
-  if (to.meta && to.meta.title) document.title = to.meta.title
-  setDescription((to.meta && to.meta.desc) || DEFAULT_DESC)
+  applyRouteMeta(to)
 })
 
 export default router

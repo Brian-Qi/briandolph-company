@@ -10,7 +10,7 @@
           <img :src="work.cover" :alt="work.name" loading="eager" decoding="async">
           <span class="case-scrim"></span>
           <div class="case-hero-copy">
-            <h2>{{ work.name }}</h2>
+            <h1>{{ work.name }}</h1>
             <p class="sub">{{ work.subtitle }}</p>
           </div>
           <a class="btn primary case-cta" :href="work.url" target="_blank" rel="noopener">前往体验 ↗</a>
@@ -42,14 +42,10 @@
 </template>
 
 <script setup>
-import { computed, watch } from 'vue'
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import co from '../data/company'
 
 const route = useRoute()
 const work = computed(() => co.works.find(w => w.id === route.params.id))
-
-watch(work, (w) => {
-  if (w) document.title = `${w.name} · 代表案例 · 彼岸时墟`
-}, { immediate: true, flush: 'post' })
 </script>

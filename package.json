@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/gen-seo.mjs",
+    "build": "vite build && node scripts/gen-seo.mjs && npm run pack",
+    "pack": "tar czf company_dist.tgz -C dist .",
     "preview": "vite preview"
   },
   "dependencies": {
