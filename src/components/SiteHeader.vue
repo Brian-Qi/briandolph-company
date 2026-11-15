@@ -1,8 +1,9 @@
 <template>
   <header class="site-head">
     <div class="wrap nav">
-      <RouterLink class="brand" to="/" @click="open = false">
-        <img class="mark" src="/logo.svg" alt="" width="28" height="28" /> 彼岸时墟游戏工作室
+      <RouterLink class="brand" to="/" aria-label="彼岸时墟 · 首页" @click="open = false">
+        <img class="mark" src="/logo.svg" alt="" width="28" height="28" />
+        <span class="brand-name" aria-hidden="true"></span>
       </RouterLink>
 
       <button

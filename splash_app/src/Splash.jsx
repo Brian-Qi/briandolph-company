@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import GlowCursorConverge from './GlowCursorConverge'
 import ElectricLogo from './ElectricLogo'
 import logo from './assets/biyu-avatar.svg'
-import nameImg from './assets/biyu-name.png'
+import nameImg from './assets/brand-name.png'
 
 const Splash = ({ onDone }) => {
   const [merged, setMerged] = useState(false)
@@ -84,15 +84,15 @@ const Splash = ({ onDone }) => {
                 src={nameImg}
                 color="#ffd6d6"
                 glowColor="#8f0000"
-                scale={0.7}
-                intensity={1.4}
-                glow={0.15}
-                thickness={1.3}
-                strands={3}
+                scale={0.68}
+                intensity={1.05}
+                glow={0.08}
+                thickness={1.15}
+                strands={2}
                 bend={0.5}
-                crackle={1.1}
+                crackle={0.6}
                 arcs={0}
-                flicker={0.35}
+                flicker={0.3}
                 speed={2}
                 theme="dark"
               />

@@ -47,6 +47,7 @@
   --hero-index: rgba(158, 164, 176, .58);
 
   /* 主题层色（昼夜切换用） */
+  --head-h: 60px;
   --head-bg: rgba(10,10,12,.82);
   --head-fg: #c7c9d2;
   --head-fg-strong: #edeef2;
@@ -162,9 +163,11 @@ h1.blk-title, h2.blk-title { font-family: var(--font-display); font-size: clamp(
 /* header */
 .site-head { position: sticky; top: 0; background: var(--head-bg); backdrop-filter: blur(10px); z-index: 20; }
 .site-head::after { content: ""; display: block; height: var(--head-line-h); background: var(--head-line); }
-.nav { display: flex; align-items: center; height: 72px; gap: clamp(20px, 2.6vw, 40px); }
+.nav { display: flex; align-items: center; height: var(--head-h); gap: clamp(20px, 2.6vw, 40px); }
 .brand { display: flex; align-items: center; gap: 12px; padding: 8px 0; font-weight: 700; letter-spacing: .02em; color: var(--head-fg-strong); }
-.mark { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; display: block; flex: none; outline: 1px solid var(--head-fg-strong); outline-offset: 2px; transition: outline-color .2s ease; }
+/* 品牌标准字：只留 alpha 通道，颜色走 currentColor，深浅主题自动适配 */
+.brand-name { display: inline-block; width: 79px; height: 38px; background: currentColor; -webkit-mask: url(/brand/name-alpha.png) center / contain no-repeat; mask: url(/brand/name-alpha.png) center / contain no-repeat; }
+.mark { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; display: block; flex: none; outline: 1px solid var(--head-fg-strong); outline-offset: 2px; transition: outline-color .2s ease; }
 .brand:hover .mark { outline-color: var(--accent); }
 .menu { display: flex; gap: clamp(18px, 2.2vw, 30px); margin: 0 0 0 auto; padding: 0; list-style: none; color: var(--head-fg); font-size: 15px; }
 .menu a { display: inline-block; width: 84px; padding: 12px 0; text-align: center; color: var(--head-fg); }
@@ -233,7 +236,7 @@ h1.blk-title, h2.blk-title { font-family: var(--font-display); font-size: clamp(
 .blk:last-child { border-bottom: 0; }
 
 /* 首页：整屏分区（与 hero 同高，滚动一步一屏） */
-.blk-fill { min-height: calc(100dvh - 72px); display: flex; align-items: center; padding: clamp(48px, 6vw, 72px) 0; }
+.blk-fill { min-height: calc(100dvh - var(--head-h)); display: flex; align-items: center; padding: clamp(48px, 6vw, 72px) 0; }
 .blk-fill > .wrap { width: 100%; }
 
 /* home · 近期作品横排卡 */
@@ -360,7 +363,7 @@ h1.blk-title, h2.blk-title { font-family: var(--font-display); font-size: clamp(
   .top-cta { display: none; }
   .menu {
     display: none;
-    position: absolute; top: 72px; left: 0; right: 0;
+    position: absolute; top: var(--head-h); left: 0; right: 0;
     flex-direction: column; gap: 0; margin: 0;
     padding: 4px clamp(16px, 5vw, 32px) 20px;
     background: var(--menu-bg);
@@ -387,6 +390,8 @@ h1.blk-title, h2.blk-title { font-family: var(--font-display); font-size: clamp(
   .case-hero-copy { left: 20px; bottom: 18px; }
   .case-cta { right: 20px; bottom: 18px; }
   .brand { font-size: 15px; }
+  .mark { width: 26px; height: 26px; }
+  .brand-name { width: 58px; height: 28px; }
   .site-foot { padding: 40px 0 32px; }
 }
 
@@ -418,7 +423,7 @@ html[data-theme="light"] .hero {
 .work-missing p { margin: 0 0 20px; color: var(--muted); }
 
 /* page hero stays behind the content for the hero-to-content transition */
-.route-page > .page-hero { position: sticky; top: 72px; z-index: 0; }
+.route-page > .page-hero { position: sticky; top: var(--head-h); z-index: 0; }
 .route-page > .page-hero ~ .blk { position: relative; z-index: 1; background: var(--bg); }
 .route-page > .page-hero + .blk {
   border-radius: 28px 28px 0 0;

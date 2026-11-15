@@ -45,7 +45,7 @@ const effectMounts = {
 
 const activeMount = computed(() => effectMounts[props.effect] || null)
 
-const HEADER = 72
+const HEADER = 60
 const SNAP_LOCK_MS = 650
 const MIN_DELTA = 24
 
@@ -144,9 +144,9 @@ onBeforeUnmount(() => {
 <style scoped>
 .page-hero {
   position: sticky;
-  top: 72px;
+  top: var(--head-h);
   z-index: 0;
-  min-height: calc(100dvh - 72px);
+  min-height: calc(100dvh - var(--head-h));
   opacity: calc(1 - var(--hero-p, 0) * 0.55);
   transform: scale(calc(1 + var(--hero-p, 0) * 0.02));
   transform-origin: 50% 35%;
@@ -213,7 +213,7 @@ onBeforeUnmount(() => {
 .page-hero__inner {
   position: relative;
   z-index: 1;
-  min-height: calc(100dvh - 72px);
+  min-height: calc(100dvh - var(--head-h));
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: end;
