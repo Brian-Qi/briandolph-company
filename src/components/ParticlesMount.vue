@@ -13,6 +13,9 @@ let root = null
 
 onMounted(() => {
   if (!host.value) return
+  // 触屏没有鼠标：悬停/视差交互一律关闭
+  const narrow =
+    window.innerWidth < 900 || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches)
   root = createRoot(host.value)
   root.render(
     React.createElement(Particles, {
@@ -37,7 +40,7 @@ onMounted(() => {
       drift: 'forward',
       driftSpeed: 1.2,
       variation: 0,
-      moveParticlesOnHover: true,
+      moveParticlesOnHover: !narrow,
       clickBurst: false,
       intro: true,
       opacity: 1,

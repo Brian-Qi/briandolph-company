@@ -45,7 +45,8 @@ onMounted(() => {
       fade: 0,
       grain: 0,
       intro: true,
-      mouseInteraction: true,
+      // 触屏没有鼠标：关掉指针交互
+      mouseInteraction: !narrow,
       mouseStrength: 0.42,
       pulseOnClick: false,
       fps: 30,

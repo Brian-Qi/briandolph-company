@@ -127,20 +127,36 @@
           return el;
         }
 
-        var needSplash = force || !seen;
-
         var coarse = false;
         var reduce = false;
         try {
           coarse = window.matchMedia('(pointer: coarse)').matches;
           reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         } catch (e) {}
+        // 手机上播开屏要多下 vendor.js(218KB) + splash.js(164KB)，
+        // 在移动网络上就是首屏卡住；触屏直接跳过（?splash 仍可强制看）。
+        var needSplash = (force || !seen) && !coarse;
         // 自定义光标（含其依赖的 React vendor）在触屏 / 减动效环境下没有意义，
         // 整条 splash 资源链都不必下载。
         var needCursor = !coarse && !reduce;
 
         if (!needSplash && !needCursor) {
           whenSiteReady(dismissBoot);
+          // 触屏（或减动效）设备：开屏和光标都不加载，但首页的地形线背景还得要。
+          // 等首屏彻底空闲后再补拉 vendor + topography，不阻塞首屏、也不参与开屏时序。
+          var idle = window.requestIdleCallback || function (cb) { return window.setTimeout(cb, 1500); };
+          idle(
+            function () {
+              if (!document.querySelector('[data-topography]')) return;
+              if (document.querySelector('.hero-bg canvas')) return;
+              addScript(
+                '/splash/vendor.js',
+                function () { addScript('/splash/topography.js', null, function () {}); },
+                function () {}
+              );
+            },
+            { timeout: 4000 }
+          );
         } else {
           addScript(
             '/splash/vendor.js',

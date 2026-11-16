@@ -49,6 +49,9 @@ onMounted(() => {
       brightness: narrow ? 2 : 1.7,
       lightMode: false,
       pulseOnClick: false,
+      // 触屏没有鼠标：指针交互一律关掉
+      mouseInteraction: !narrow,
+      hoverEffect: narrow ? 'none' : 'focus',
       dpr: narrow ? 0.9 : 1.25
     })
   )
