@@ -311,14 +311,75 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 900px) {
+  /* 手机上内页 hero 占满一屏（减掉页头），内容居中，特效整个铺满 */
+  .page-hero {
+    min-height: calc(100svh - var(--head-h));
+  }
+
   .page-hero__inner {
-    display: block;
-    padding-top: clamp(100px, 16vh, 180px);
-    padding-bottom: clamp(48px, 8vh, 92px);
+    display: flex;
+    align-items: center;
+    min-height: calc(100svh - var(--head-h));
+    padding-top: clamp(64px, 10vh, 110px);
+    padding-bottom: clamp(72px, 12vh, 130px);
   }
 
   .page-hero__copy {
     max-width: none;
+    /* 满屏构图：文案落脚在下方 1/3，上方留给特效 */
+    align-self: flex-end;
+    margin-bottom: clamp(8px, 2vh, 24px);
+  }
+
+  /* 特效亮部会压住文字（服务页最明显），加一层只在文案区的暗角兜住对比度，
+     渐变到透明，特效仍然完整可见 */
+  .page-hero__copy {
+    position: relative;
+    isolation: isolate; /* 让 ::before 的 -1 只在文案内部生效，不会沉到特效层后面 */
+  }
+
+  .page-hero__copy::before {
+    content: "";
+    position: absolute;
+    inset: -72px -48px -72px -48px;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse 130% 135% at 16% 55%,
+      rgba(6, 8, 12, 0.8) 0%,
+      rgba(6, 8, 12, 0.6) 26%,
+      rgba(6, 8, 12, 0.28) 52%,
+      rgba(6, 8, 12, 0.06) 74%,
+      rgba(6, 8, 12, 0) 92%
+    );
+  }
+
+  .page-hero h1,
+  .page-hero .sub {
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.55);
+  }
+}
+
+@media (max-width: 900px) and (max-height: 560px) {
+  .page-hero__inner { min-height: 420px; padding-top: 64px; }
+}
+
+/* 浅色主题下暗角换成浅色雾，别在浅底上糊一块黑 */
+@media (max-width: 900px) {
+  :global(html[data-theme="light"]) .page-hero__copy::before {
+    background: radial-gradient(
+      ellipse 130% 135% at 16% 55%,
+      rgba(255, 255, 255, 0.84) 0%,
+      rgba(255, 255, 255, 0.64) 26%,
+      rgba(255, 255, 255, 0.3) 52%,
+      rgba(255, 255, 255, 0.06) 74%,
+      rgba(255, 255, 255, 0) 92%
+    );
+  }
+
+  :global(html[data-theme="light"]) .page-hero h1,
+  :global(html[data-theme="light"]) .page-hero .sub {
+    text-shadow: 0 1px 12px rgba(255, 255, 255, 0.6);
   }
 }
 </style>

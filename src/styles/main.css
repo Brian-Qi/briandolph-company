@@ -356,6 +356,9 @@ h1.blk-title, h2.blk-title { font-family: var(--font-display); font-size: clamp(
 .foot-line b { color: var(--ink2); font-weight: 500; text-align: right; min-height: 1.2em; }
 .foot-copy { margin-top: 34px; padding-top: 20px; border-top: 1px solid var(--divider); display: flex; justify-content: space-between; font-size: 12.5px; }
 
+/* 桌面端在指定处断行，窄屏交给自然折行（避免手机上硬断在句子中间） */
+.br-desktop { display: block; height: 0; }
+
 @media (max-width: 1080px) {
   .nav { gap: 24px; }
   .menu { gap: 22px; }
@@ -405,6 +408,20 @@ h1.blk-title, h2.blk-title { font-family: var(--font-display); font-size: clamp(
   .mark { width: 26px; height: 26px; }
   .brand-name { width: 58px; height: 28px; }
   .site-foot { padding: 40px 0 32px; }
+  /* 两段并排会挤成「彼岸时墟 · Lycoris / Null」，窄屏改竖排 */
+  .foot-copy { flex-direction: column; gap: 6px; align-items: flex-start; }
+}
+
+@media (max-width: 900px) {
+  /* 窄屏不需要强制断行，交给自然折行 */
+  .br-desktop { display: none; }
+}
+
+@media (max-width: 480px) {
+  .tag { padding: 4px 8px; font-size: 12px; }
+  .tags { gap: 6px; }
+  .blk-title { font-size: clamp(24px, 6.6vw, 30px); }
+  .lead { font-size: 15.5px; line-height: 1.85; }
 }
 
 /* light-mode hero */

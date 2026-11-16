@@ -433,7 +433,17 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 900px) {
-  .hero { height: calc(100dvh - var(--head-h)); min-height: 480px; }
+  /* 手机上 hero 占满一屏（减掉页头），特效铺满整屏 */
+  .hero { height: calc(100svh - var(--head-h)); min-height: 520px; }
+  /* 窄屏地形线更稀，提亮补偿，保证特效仍看得见 */
+  .hero-bg { opacity: 0.8; }
+  /* 手机不加载 topography（要 256KB 的 vendor），用渐变托底，避免满屏一片纯黑 */
+  .hero {
+    background:
+      radial-gradient(80% 52% at 50% 0%, rgba(14, 143, 163, 0.22), transparent 64%),
+      radial-gradient(62% 46% at 84% 96%, rgba(85, 255, 120, 0.07), transparent 62%),
+      linear-gradient(180deg, #060a0c 0%, #0a1215 52%, #060a0c 100%);
+  }
   .index { display: none; }
   .copy-block { max-width: none; }
   .title { font-size: clamp(30px, 8.4vw, 46px); }
@@ -443,5 +453,19 @@ onBeforeUnmount(() => {
   .dots { bottom: 22px; }
   .hero__hint { bottom: 66px; }
   .slide-media img { object-position: 66% center; }
+}
+
+@media (max-width: 900px) and (max-height: 560px) {
+  /* 横屏：优先保证内容可见 */
+  .hero { height: auto; min-height: 420px; padding: 32px 0; }
+}
+
+/* 浅色主题下窄屏的托底渐变换成浅色雾，别在浅底上糊一块黑 */
+@media (max-width: 900px) {
+  :global(html[data-theme="light"]) .hero {
+    background:
+      radial-gradient(70% 50% at 50% 0%, rgba(14, 143, 163, 0.14), transparent 62%),
+      linear-gradient(180deg, #f7fbfc 0%, #eef4f6 55%, #f7fbfc 100%);
+  }
 }
 </style>
