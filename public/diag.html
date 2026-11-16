@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>能力自检 · 彼岸时墟</title>
+<style>
+  :root { color-scheme: dark; }
+  body {
+    margin: 0; padding: 18px 16px 48px; background: #08080d; color: #e6e7ea;
+    font: 14px/1.7 -apple-system, "Segoe UI", system-ui, sans-serif;
+  }
+  h1 { font-size: 16px; margin: 0 0 4px; }
+  .sub { color: #7c7f89; font-size: 12px; margin-bottom: 18px; }
+  section { margin-bottom: 20px; }
+  h2 { font-size: 13px; color: #55ff78; margin: 0 0 8px; letter-spacing: .06em; }
+  .row { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 1px solid #1a1a20; }
+  .row span { color: #9a9daa; }
+  .row b { color: #e6e7ea; font-weight: 600; text-align: right; word-break: break-all; }
+  .ok { color: #55ff78 !important; }
+  .bad { color: #ff6b6b !important; }
+  pre { background: #101015; border: 1px solid #1e1e26; border-radius: 8px; padding: 10px; font-size: 11.5px; line-height: 1.6; overflow-x: auto; white-space: pre-wrap; color: #b9bcc7; }
+  button { font: inherit; background: #1b1b21; color: #c9cbd3; border: 1px solid #2b2b33; border-radius: 8px; padding: 9px 14px; margin: 0 8px 8px 0; }
+  iframe { display: none; }
+</style>
+</head>
+<body>
+<h1>能力自检</h1>
+<div class="sub">这个页面只做检测，不改任何东西。把整页截图发回去就行。</div>
+
+<section>
+  <h2>浏览器</h2>
+  <div id="ua"></div>
+</section>
+
+<section>
+  <h2>显示与指针</h2>
+  <div id="env"></div>
+</section>
+
+<section>
+  <h2>图形能力</h2>
+  <div id="gfx"></div>
+</section>
+
+<section>
+  <h2>页面实测</h2>
+  <div id="probe"></div>
+  <pre id="raw">检测中…</pre>
+</section>
+
+<button id="again">重新检测</button>
+
+<script>
+(function () {
+  var gpuResult = '检测中';
+  var gpuAdapter = '检测中';
+  var gl2 = null, gl1 = null;
+
+  function row(container, label, value, cls) {
+    var d = document.createElement('div');
+    d.className = 'row';
+    d.innerHTML = '<span>' + label + '</span><b class="' + (cls || '') + '">' + value + '</b>';
+    container.appendChild(d);
+  }
+
+  function put(id, html) { document.getElementById(id).innerHTML = html; }
+
+  function fill() {
+    put('ua', '');
+    var ua = document.getElementById('ua');
+    row(ua, 'User-Agent', navigator.userAgent);
+
+    var env = document.getElementById('env');
+    put('env', '');
+    row(env, '触屏指针 coarse', matchMedia('(pointer: coarse)').matches ? 'true' : 'false', matchMedia('(pointer: coarse)').matches ? 'ok' : 'bad');
+    row(env, 'hover: hover', matchMedia('(hover: hover)').matches ? 'true' : 'false');
+    row(env, '视口', innerWidth + ' × ' + innerHeight);
+    row(env, 'DPR', String(devicePixelRatio));
+    row(env, '支持 100svh', CSS.supports('height', '100svh') ? 'true' : 'false');
+    row(env, '支持 100dvh', CSS.supports('height', '100dvh') ? 'true' : 'false');
+
+    var gfx = document.getElementById('gfx');
+    put('gfx', '');
+    row(gfx, 'navigator.gpu 存在', ('gpu' in navigator) ? 'true' : 'false', ('gpu' in navigator) ? 'ok' : 'bad');
+    row(gfx, 'requestAdapter', gpuAdapter, gpuAdapter === 'OK' ? 'ok' : (gpuAdapter === '检测中' ? '' : 'bad'));
+    row(gfx, 'WebGL2', gl2 === null ? '检测中' : (gl2 ? 'true' : 'false'), gl2 ? 'ok' : 'bad');
+    row(gfx, 'WebGL1', gl1 === null ? '检测中' : (gl1 ? 'true' : 'false'), gl1 ? 'ok' : 'bad');
+  }
+
+  // 图形能力
+  var c = document.createElement('canvas');
+  try { gl2 = !!c.getContext('webgl2'); } catch (e) { gl2 = false; }
+  try { gl1 = !!document.createElement('canvas').getContext('webgl'); } catch (e) { gl1 = false; }
+
+  if ('gpu' in navigator && navigator.gpu) {
+    navigator.gpu.requestAdapter()
+      .then(function (a) { gpuAdapter = a ? 'OK' : 'null（拿到 GPU 对象但没适配器）'; fill(); })
+      .catch(function (e) { gpuAdapter = '报错：' + e.message; fill(); });
+  } else {
+    gpuAdapter = '无 navigator.gpu';
+  }
+
+  fill();
+
+  // 页面实测：把首页/关于页塞进 iframe，看特效到底有没有起来
+  var raw = document.getElementById('raw');
+  var lines = [];
+
+  function probePage(url, label) {
+    return new Promise(function (resolve) {
+      var f = document.createElement('iframe');
+      f.width = 360; f.height = 700; f.src = url;
+      document.body.appendChild(f);
+      var done = false;
+      function finish(res) {
+        if (done) return;
+        done = true;
+        try { f.remove(); } catch (e) {}
+        resolve(res);
+      }
+      f.onload = function () {
+        setTimeout(function () {
+          var r = { label: label, canvas: 0, canvasInfo: [], bg: '(无)', splash: [] };
+          try {
+            var d = f.contentDocument;
+            var cs = d.querySelectorAll('canvas');
+            r.canvas = cs.length;
+            cs.forEach(function (x) { r.canvasInfo.push(x.width + 'x' + x.height); });
+            var bg = d.querySelector('.hero-bg') || d.querySelector('.page-hero__bg');
+            r.bg = bg ? (bg.innerHTML || '(空)').slice(0, 100) : '(没找到容器)';
+            r.splash = performance.getEntriesByType('resource')
+              .map(function (e) { return e.name; })
+              .filter(function (n) { return /splash\//.test(n); })
+              .map(function (n) { return n.split('/').pop(); });
+          } catch (e) {
+            r.bg = '读取失败：' + e.message;
+          }
+          finish(r);
+        }, 4200);
+      };
+      setTimeout(function () { finish({ label: label, canvas: -1, bg: '超时' }); }, 9000);
+    });
+  }
+
+  (async function () {
+    var results = [];
+    results.push(await probePage('/about/', '关于页 /about/'));
+    results.push(await probePage('/', '首页 /'));
+
+    var wrap = document.getElementById('probe');
+    put('probe', '');
+    results.forEach(function (r) {
+      row(wrap, r.label + ' canvas', String(r.canvas), r.canvas > 0 ? 'ok' : 'bad');
+      row(wrap, r.label + ' 尺寸', r.canvasInfo.join(', ') || '无');
+      lines.push(r.label + ' | canvas=' + r.canvas + ' ' + r.canvasInfo.join(','));
+      lines.push('  容器: ' + r.bg.replace(/\n/g, ' '));
+      lines.push('  splash资源: ' + (r.splash.join(', ') || '无'));
+    });
+    raw.textContent = lines.join('\n');
+  })();
+
+  document.getElementById('again').addEventListener('click', function () { location.reload(); });
+})();
+</script>
+</body>
+</html>

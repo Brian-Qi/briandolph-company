@@ -11,10 +11,18 @@ import AeroShards from './aero/AeroShards.jsx'
 const host = ref(null)
 let root = null
 
-// AeroShards 用的是 WebGPU（navigator.gpu）。iOS Safari 至今默认不开，
-// 部分安卓 WebView 也没有 —— 那种环境下它直接抛错，整块背景空白。
-const hasWebGPU = () =>
-  typeof navigator !== 'undefined' && 'gpu' in navigator && !!navigator.gpu
+// AeroShards 用的是 WebGPU（navigator.gpu）。iOS Safari 至今默认不开；
+// 华为/部分 Android WebView 虽然有 navigator.gpu，却拿不到 adapter（或直接抛错）。
+// 所以不能只看有没有这个对象，必须真去 requestAdapter 一次。
+const supportsWebGPU = async () => {
+  if (typeof navigator === 'undefined' || !('gpu' in navigator) || !navigator.gpu) return false
+  try {
+    const adapter = await navigator.gpu.requestAdapter()
+    return !!adapter
+  } catch (e) {
+    return false
+  }
+}
 
 onMounted(async () => {
   if (!host.value) return
@@ -25,8 +33,8 @@ onMounted(async () => {
 
   root = createRoot(host.value)
 
-  // 没有 WebGPU：退化成 GhostFibers（WebGL2），同样做成竖向，不留白屏
-  if (!hasWebGPU()) {
+  // 没有可用的 WebGPU：退化成 GhostFibers（WebGL2），同样做成竖向，不留白屏
+  if (!(await supportsWebGPU())) {
     const { default: GhostFibers } = await import('./ghost/GhostFibers.jsx')
     if (!host.value) return
     root.render(
