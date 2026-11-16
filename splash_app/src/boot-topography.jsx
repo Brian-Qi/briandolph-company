@@ -26,6 +26,7 @@ const topographyProps = {
   morph: 0.1,
   speed: 0.18,
   detail: 0.3,
+  markers: 'none',
   glitch: 0.1,
   mouseInteraction: true,
   mouseRadius: 0.8,
