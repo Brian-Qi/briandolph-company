@@ -468,18 +468,46 @@ html[data-theme="light"] .page-hero { background: #f7fbfc; }
 html[data-theme="light"] .page-hero__light { display: block; }
 
 
-/* 登录入口（指向账号中心，带 next 回到当前页） */
-.login-entry {
-  display: inline-flex; align-items: center; justify-content: center;
-  padding: 9px 18px;
-  font-size: 14px; font-weight: 600; line-height: 1;
-  color: var(--on-accent); background: var(--grad);
-  border-radius: var(--radius);
-  transition: filter .2s ease, transform .32s var(--ease);
-  white-space: nowrap;
+/* 账号入口：默认头像 + 下拉（登录 / 注册） */
+.avatar-wrap { position: relative; flex: none; margin-left: 6px; }
+.avatar-btn {
+  width: 34px; height: 34px;
+  display: grid; place-items: center;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--head-line);
+  background: var(--surface-2, rgba(255,255,255,.06));
+  color: var(--head-fg, var(--muted));
+  cursor: pointer;
+  transition: border-color .2s ease, color .2s ease, background .2s ease, transform .2s var(--ease);
 }
-.login-entry:hover { filter: brightness(1.07); transform: translateY(-1px); text-decoration: none; }
-.login-entry:active { transform: translateY(0); }
-@media (max-width: 860px) {
-  .login-entry.top-login { display: none; }
+.avatar-btn svg { width: 19px; height: 19px; display: block; }
+.avatar-btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+.avatar-btn[aria-expanded="true"] { border-color: var(--accent); color: var(--accent); background: var(--surface); }
+
+.avatar-menu {
+  position: absolute; right: 0; top: calc(100% + 10px);
+  min-width: 140px;
+  padding: 6px;
+  display: grid;
+  background: var(--menu-bg, var(--surface));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 44px -22px rgba(0, 0, 0, .9);
+  z-index: 60;
+  animation: avatarIn .16s var(--ease);
+}
+@keyframes avatarIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+.avatar-menu a {
+  padding: 9px 12px;
+  border-radius: 4px;
+  color: var(--head-fg, var(--ink2));
+  font-size: 14px;
+  text-decoration: none;
+  transition: background .16s ease, color .16s ease;
+}
+.avatar-menu a:hover { background: var(--surface-2); color: var(--head-fg-strong, var(--ink)); text-decoration: none; }
+@media (max-width: 480px) {
+  .avatar-wrap { margin-left: 2px; }
+  .avatar-btn { width: 32px; height: 32px; }
 }

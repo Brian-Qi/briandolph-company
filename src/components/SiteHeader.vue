@@ -23,7 +23,6 @@
           </RouterLink>
         </li>
         <li class="menu-cta">
-          <a class="login-entry" :href="loginUrl">登录</a>
           <button class="theme-switch" type="button" :class="{ 'is-light': isLight }" :aria-pressed="String(isLight)" :aria-label="isLight ? '切换到深色' : '切换到浅色'" @click="applyTheme(isLight ? 'dark' : 'light', $event)">
             <span class="tt-track">
               <span class="knob">
@@ -35,7 +34,6 @@
         </li>
       </ul>
 
-      <a class="login-entry top-login" :href="loginUrl">登录</a>
       <button class="theme-switch top-cta" type="button" :class="{ 'is-light': isLight }" :aria-pressed="String(isLight)" :aria-label="isLight ? '切换到深色' : '切换到浅色'" @click="applyTheme(isLight ? 'dark' : 'light', $event)">
         <span class="tt-track">
           <span class="knob">
@@ -44,6 +42,28 @@
           </span>
         </span>
       </button>
+
+      <!-- 账号入口：默认头像 → 点击展开 登录 / 注册 -->
+      <div ref="avatarWrap" class="avatar-wrap">
+        <button
+          class="avatar-btn"
+          type="button"
+          aria-haspopup="menu"
+          :aria-expanded="String(menuOpen)"
+          aria-label="账号"
+          @click.stop="menuOpen = !menuOpen"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="8.5" r="3.6" />
+            <path d="M4.5 20c1.4-3.4 4-5.1 7.5-5.1s6.1 1.7 7.5 5.1" />
+          </svg>
+        </button>
+
+        <div v-if="menuOpen" class="avatar-menu" role="menu">
+          <a role="menuitem" :href="loginUrl">登录</a>
+          <a role="menuitem" :href="registerUrl">注册</a>
+        </div>
+      </div>
     </div>
   </header>
 </template>
@@ -51,10 +71,29 @@
 <script setup>
 import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
+
 const route = useRoute()
 const open = ref(false)
 const isLight = ref(false)
 let systemMedia = null
+
+// ---- 账号下拉 ----
+const menuOpen = ref(false)
+const avatarWrap = ref(null)
+
+const backTo = () =>
+  typeof window === 'undefined' ? 'https://www.briandolph.xyz/' : window.location.href
+
+const loginUrl = computed(() => 'https://account.briandolph.xyz/login?next=' + encodeURIComponent(backTo()))
+const registerUrl = computed(() => 'https://account.briandolph.xyz/register?next=' + encodeURIComponent(backTo()))
+
+function onDocPointerDown(e) {
+  if (!menuOpen.value) return
+  if (avatarWrap.value && !avatarWrap.value.contains(e.target)) menuOpen.value = false
+}
+function onKeyDown(e) {
+  if (e.key === 'Escape') menuOpen.value = false
+}
 
 function followSystem() {
   if (!systemMedia) return
@@ -71,13 +110,20 @@ onMounted(() => {
   systemMedia = window.matchMedia('(prefers-color-scheme: light)')
   if (systemMedia.addEventListener) systemMedia.addEventListener('change', followSystem)
   else systemMedia.addListener?.(followSystem)
+
+  document.addEventListener('pointerdown', onDocPointerDown)
+  document.addEventListener('keydown', onKeyDown)
 })
 
 onBeforeUnmount(() => {
-  if (!systemMedia) return
-  if (systemMedia.removeEventListener) systemMedia.removeEventListener('change', followSystem)
-  else systemMedia.removeListener?.(followSystem)
+  if (systemMedia) {
+    if (systemMedia.removeEventListener) systemMedia.removeEventListener('change', followSystem)
+    else systemMedia.removeListener?.(followSystem)
+  }
+  document.removeEventListener('pointerdown', onDocPointerDown)
+  document.removeEventListener('keydown', onKeyDown)
 })
+
 function applyTheme(t, e) {
   if ((t === 'light') === isLight.value) return
   const el = e && e.currentTarget ? e.currentTarget : null
@@ -102,11 +148,6 @@ function applyTheme(t, e) {
     commit()
   }
 }
-// 登录入口：带上当前页，登录后能回到原地
-const loginUrl = computed(() => {
-  const back = typeof window === 'undefined' ? 'https://www.briandolph.xyz/' : window.location.href
-  return 'https://account.briandolph.xyz/login?next=' + encodeURIComponent(back)
-})
 
 const nav = [
   { to: '/', label: '首页' },
@@ -116,5 +157,5 @@ const nav = [
   { to: '/contact', label: '联系我们' }
 ]
 const isActive = (p) => (p === '/' ? route.path === '/' : route.path.startsWith(p))
-watch(() => route.fullPath, () => { open.value = false })
+watch(() => route.fullPath, () => { open.value = false; menuOpen.value = false })
 </script>
