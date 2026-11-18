@@ -17,6 +17,9 @@
         <span>© 2026 杭州市拱墅区彼岸时墟游戏工作室</span>
         <span>彼岸时墟 · Lycoris Null</span>
       </div>
+      <div class="foot-beian">
+        <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">浙ICP备2026048634号</a>
+      </div>
     </div>
   </footer>
 </template>
