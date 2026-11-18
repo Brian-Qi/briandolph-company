@@ -511,3 +511,34 @@ html[data-theme="light"] .page-hero__light { display: block; }
   .avatar-wrap { margin-left: 2px; }
   .avatar-btn { width: 32px; height: 32px; }
 }
+/* 账号区：登录后首字母头像 */
+.avatar-btn.is-user {
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--head-line, var(--line)));
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  color: var(--accent);
+}
+.avatar-initial {
+  font-family: var(--font-display);
+  font-size: 14px; font-weight: 700; line-height: 1;
+}
+.avatar-who {
+  display: grid; gap: 2px;
+  padding: 8px 12px 10px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--divider, var(--line));
+}
+.avatar-who b { font-size: 13.5px; color: var(--head-fg-strong, var(--ink)); font-weight: 600; }
+.avatar-who i {
+  font-style: normal; font-size: 11.5px; color: var(--muted);
+  font-family: var(--font-display); letter-spacing: .06em;
+}
+.avatar-menu .avatar-logout {
+  padding: 9px 12px;
+  border: 0; border-radius: 4px;
+  background: transparent;
+  color: #ff8a8a;
+  font: inherit; font-size: 14px; text-align: left;
+  cursor: pointer;
+  transition: background .16s ease, color .16s ease;
+}
+.avatar-menu .avatar-logout:hover { background: color-mix(in srgb, #ff6b6b 12%, transparent); color: #ff6b6b; }

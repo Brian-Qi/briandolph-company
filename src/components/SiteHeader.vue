@@ -43,25 +43,37 @@
         </span>
       </button>
 
-      <!-- 账号入口：默认头像 → 点击展开 登录 / 注册 -->
+      <!-- 账号区：登录后显示首字母头像 -->
       <div ref="avatarWrap" class="avatar-wrap">
         <button
           class="avatar-btn"
+          :class="{ 'is-user': !!accUser }"
           type="button"
           aria-haspopup="menu"
           :aria-expanded="String(menuOpen)"
-          aria-label="账号"
+          :aria-label="accUser ? '账号：' + accUser.username : '账号'"
           @click.stop="menuOpen = !menuOpen"
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <span v-if="accUser" class="avatar-initial">{{ initial }}</span>
+          <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="8.5" r="3.6" />
             <path d="M4.5 20c1.4-3.4 4-5.1 7.5-5.1s6.1 1.7 7.5 5.1" />
           </svg>
         </button>
 
         <div v-if="menuOpen" class="avatar-menu" role="menu">
-          <a role="menuitem" :href="loginUrl">登录</a>
-          <a role="menuitem" :href="registerUrl">注册</a>
+          <template v-if="accUser">
+            <div class="avatar-who">
+              <b>{{ accUser.username }}</b>
+              <i v-if="accUser.publicNo">编号 {{ accUser.publicNo }}</i>
+            </div>
+            <a role="menuitem" :href="accountHome">账户中心</a>
+            <button class="avatar-logout" type="button" role="menuitem" @click="doLogout">退出登录</button>
+          </template>
+          <template v-else>
+            <a role="menuitem" :href="loginUrl">登录</a>
+            <a role="menuitem" :href="registerUrl">注册</a>
+          </template>
         </div>
       </div>
     </div>
@@ -72,20 +84,55 @@
 import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 
+const ACCOUNT = 'https://account.briandolph.xyz'
+
 const route = useRoute()
 const open = ref(false)
 const isLight = ref(false)
 let systemMedia = null
 
-// ---- 账号下拉 ----
+// ---- 账号态（跨子域，靠 .briandolph.xyz 的会话 cookie） ----
 const menuOpen = ref(false)
 const avatarWrap = ref(null)
+const accUser = ref(null)
+
+const initial = computed(() => {
+  const n = accUser.value?.username || ''
+  return n ? n.slice(0, 1).toUpperCase() : ''
+})
 
 const backTo = () =>
   typeof window === 'undefined' ? 'https://www.briandolph.xyz/' : window.location.href
 
-const loginUrl = computed(() => 'https://account.briandolph.xyz/login?next=' + encodeURIComponent(backTo()))
-const registerUrl = computed(() => 'https://account.briandolph.xyz/register?next=' + encodeURIComponent(backTo()))
+const loginUrl = computed(() => `${ACCOUNT}/login?next=` + encodeURIComponent(backTo()))
+const registerUrl = computed(() => `${ACCOUNT}/register?next=` + encodeURIComponent(backTo()))
+const accountHome = `${ACCOUNT}/`
+
+async function loadAccount() {
+  try {
+    const r = await fetch(`${ACCOUNT}/api/auth/me`, { credentials: 'include' })
+    if (r.ok) {
+      const d = await r.json()
+      accUser.value = d.user || null
+    } else {
+      accUser.value = null
+    }
+  } catch {
+    accUser.value = null
+  }
+}
+
+async function doLogout() {
+  menuOpen.value = false
+  try {
+    await fetch(`${ACCOUNT}/api/auth/logout`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'content-type': 'application/json' },
+    })
+  } catch { /* 网络失败也把本地态清掉 */ }
+  accUser.value = null
+}
 
 function onDocPointerDown(e) {
   if (!menuOpen.value) return
@@ -113,6 +160,7 @@ onMounted(() => {
 
   document.addEventListener('pointerdown', onDocPointerDown)
   document.addEventListener('keydown', onKeyDown)
+  loadAccount()
 })
 
 onBeforeUnmount(() => {
