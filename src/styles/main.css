@@ -467,3 +467,19 @@ html[data-theme="light"] .hero {
 html[data-theme="light"] .page-hero { background: #f7fbfc; }
 html[data-theme="light"] .page-hero__light { display: block; }
 
+
+/* 登录入口（指向账号中心，带 next 回到当前页） */
+.login-entry {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 9px 18px;
+  font-size: 14px; font-weight: 600; line-height: 1;
+  color: var(--on-accent); background: var(--grad);
+  border-radius: var(--radius);
+  transition: filter .2s ease, transform .32s var(--ease);
+  white-space: nowrap;
+}
+.login-entry:hover { filter: brightness(1.07); transform: translateY(-1px); text-decoration: none; }
+.login-entry:active { transform: translateY(0); }
+@media (max-width: 860px) {
+  .login-entry.top-login { display: none; }
+}

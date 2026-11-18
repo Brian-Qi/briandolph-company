@@ -23,6 +23,7 @@
           </RouterLink>
         </li>
         <li class="menu-cta">
+          <a class="login-entry" :href="loginUrl">登录</a>
           <button class="theme-switch" type="button" :class="{ 'is-light': isLight }" :aria-pressed="String(isLight)" :aria-label="isLight ? '切换到深色' : '切换到浅色'" @click="applyTheme(isLight ? 'dark' : 'light', $event)">
             <span class="tt-track">
               <span class="knob">
@@ -34,6 +35,7 @@
         </li>
       </ul>
 
+      <a class="login-entry top-login" :href="loginUrl">登录</a>
       <button class="theme-switch top-cta" type="button" :class="{ 'is-light': isLight }" :aria-pressed="String(isLight)" :aria-label="isLight ? '切换到深色' : '切换到浅色'" @click="applyTheme(isLight ? 'dark' : 'light', $event)">
         <span class="tt-track">
           <span class="knob">
@@ -47,7 +49,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 const route = useRoute()
 const open = ref(false)
@@ -100,6 +102,12 @@ function applyTheme(t, e) {
     commit()
   }
 }
+// 登录入口：带上当前页，登录后能回到原地
+const loginUrl = computed(() => {
+  const back = typeof window === 'undefined' ? 'https://www.briandolph.xyz/' : window.location.href
+  return 'https://account.briandolph.xyz/login?next=' + encodeURIComponent(back)
+})
+
 const nav = [
   { to: '/', label: '首页' },
   { to: '/about', label: '关于我们' },
