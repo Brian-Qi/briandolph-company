@@ -84,7 +84,7 @@
 import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 
-const ACCOUNT = 'https://account.briandolph.xyz'
+const ACCOUNT = '/account'
 
 const route = useRoute()
 const open = ref(false)
@@ -110,7 +110,7 @@ const accountHome = `${ACCOUNT}/`
 
 async function loadAccount() {
   try {
-    const r = await fetch(`${ACCOUNT}/api/auth/me`, { credentials: 'include' })
+    const r = await fetch('/api/auth/me', { credentials: 'include' })
     if (r.ok) {
       const d = await r.json()
       accUser.value = d.user || null
@@ -125,7 +125,7 @@ async function loadAccount() {
 async function doLogout() {
   menuOpen.value = false
   try {
-    await fetch(`${ACCOUNT}/api/auth/logout`, {
+    await fetch('/api/auth/logout', {
       method: 'POST',
       credentials: 'include',
       headers: { 'content-type': 'application/json' },
