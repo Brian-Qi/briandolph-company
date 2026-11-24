@@ -249,7 +249,8 @@ h1.blk-title, h2.blk-title { font-family: var(--font-display); font-size: clamp(
 .blk:last-child { border-bottom: 0; }
 
 /* 首页：整屏分区（与 hero 同高，滚动一步一屏） */
-.blk-fill { min-height: calc(100dvh - var(--head-total)); display: flex; align-items: center; padding: clamp(48px, 6vw, 72px) 0; }
+/* 内容区块不再强制一屏：原来 min-height:100dvh + align-items:center，导致每块上下各留 ~142px 空白，滚过满屏 Hero 后正对一条「线 + 大片空白」。Hero 仍然是 100dvh 霸屏，这里只让内容块按自身高度排。 */
+.blk-fill { padding: clamp(56px, 6.4vw, 96px) 0; }
 .blk-fill > .wrap { width: 100%; }
 
 /* home · 近期作品横排卡 */
