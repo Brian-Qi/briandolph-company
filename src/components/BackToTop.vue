@@ -1,5 +1,5 @@
 <template>
-  <button v-show="visible" class="back-top" type="button" aria-label="回到顶部" @click="toTop">
+  <button v-show="visible" class="back-top" type="button" data-testid="back-top" aria-label="回到顶部" @click="toTop">
     <span class="back-top__icon" aria-hidden="true" v-html="arrowUp"></span>
   </button>
 </template>

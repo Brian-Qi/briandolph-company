@@ -25,7 +25,7 @@
       <div class="blk-head">
         <div>
           <h2 class="blk-title">近期作品</h2>
-          <p class="lead">已上线，点开就能体验。</p>
+          <p class="lead">已上线。</p>
         </div>
         <RouterLink class="btn ghost" to="/works">查看全部案例 →</RouterLink>
       </div>

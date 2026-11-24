@@ -77,11 +77,10 @@
         :class="{ on: i === current }"
         :aria-label="'第 ' + (i + 1) + ' 张：' + s.tab"
         :aria-current="i === current ? 'true' : 'false'"
+        :data-testid="'hero-dot-' + i"
         @click="goTo(i)"
       ></button>
     </div>
-
-    <ScrollHint class="hero__hint" label="SCROLL" />
 
   </section>
 </template>
@@ -90,7 +89,6 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import HeroStrokeNumber from './HeroStrokeNumber.vue'
 import HeroTechNumber from './HeroTechNumber.vue'
-import ScrollHint from './ScrollHint.vue'
 
 const slides = [
   {
@@ -103,7 +101,7 @@ const slides = [
   },
   {
     title: '小而完整 全程负责',
-    sub: '一支团队从需求走到上线，不外包、不转包，交付可用、可维护。',
+    sub: '从需求到上线由同一支团队完成，不外包、不转包。',
     cta: '了解合作流程', to: '/services',
     tab: '我们的坚持',
     imgLight: '/hero/light-02-archive.webp',
@@ -387,13 +385,6 @@ onBeforeUnmount(() => {
 .side.next { right: 30px; }
 
 /* 线段式指示器 */
-.hero__hint {
-  position: absolute;
-  left: 50%;
-  bottom: 78px;
-  z-index: 3;
-  transform: translateX(-50%);
-}
 
 .dots {
   position: absolute;
@@ -451,8 +442,7 @@ onBeforeUnmount(() => {
   .btns { margin-top: 28px; }
   .side { display: none; }
   .dots { bottom: 22px; }
-  .hero__hint { bottom: 66px; }
-  .slide-media img { object-position: 66% center; }
+    .slide-media img { object-position: 66% center; }
 }
 
 @media (max-width: 900px) and (max-height: 560px) {

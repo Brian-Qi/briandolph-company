@@ -1,5 +1,5 @@
 <template>
-  <PageHero eyebrow="ABOUT" effect="aero" light-image="/hero/page-about-light.webp" title="关于我们" :subtitle="co.en + ' · 一家专注游戏、数字内容与软件的交付型技术工作室'" />
+  <PageHero effect="aero" light-image="/hero/page-about-light.webp" title="关于我们" :subtitle="co.en + ' · 一家专注游戏、数字内容与软件的交付型技术工作室'" />
 
   <section class="blk">
     <div class="wrap">

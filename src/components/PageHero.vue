@@ -10,28 +10,22 @@
 
     <div class="wrap page-hero__inner">
       <div class="page-hero__copy">
-        <p v-if="eyebrow" class="page-hero__eyebrow">
-          <span class="page-hero__rule"></span>{{ eyebrow }}
-        </p>
         <h1>{{ title }}</h1>
-        <p class="sub">{{ subtitle }}</p>
+        <p v-if="subtitle" class="sub">{{ subtitle }}</p>
         <slot />
       </div>
     </div>
-    <ScrollHint class="page-hero__hint" label="SCROLL" />
   </section>
 </template>
 
 <script setup>
 import { computed, defineAsyncComponent, onBeforeUnmount, onMounted, ref } from 'vue'
-import ScrollHint from './ScrollHint.vue'
 
 const props = defineProps({
   title: { type: String, required: true },
   subtitle: { type: String, default: '' },
   effect: { type: String, default: 'none' },
-  lightImage: { type: String, default: '' },
-  eyebrow: { type: String, default: '' }
+  lightImage: { type: String, default: '' }
 })
 
 // 四个特效各自异步成 chunk：每个内页只下载自己那一个，
@@ -177,7 +171,7 @@ onBeforeUnmount(() => {
   position: sticky;
   top: var(--head-h);
   z-index: 0;
-  min-height: calc(100dvh - var(--head-h));
+  min-height: calc(100dvh - var(--head-h) - 80px);
   opacity: calc(1 - var(--hero-p, 0) * 0.55);
   transform: scale(calc(1 + var(--hero-p, 0) * 0.02));
   transform-origin: 50% 35%;
@@ -237,18 +231,11 @@ onBeforeUnmount(() => {
     linear-gradient(0deg, #f7fbfc 0%, #eef4f7 46%, #fbfbfc 100%);
 }
 
-.page-hero__hint {
-  position: absolute;
-  left: 50%;
-  bottom: 18px;
-  z-index: 2;
-  transform: translateX(-50%);
-}
 
 .page-hero__inner {
   position: relative;
   z-index: 1;
-  min-height: calc(100dvh - var(--head-h));
+  min-height: calc(100dvh - var(--head-h) - 80px);
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: end;
@@ -259,28 +246,11 @@ onBeforeUnmount(() => {
 
 .page-hero__copy {
   align-self: end;
+  padding-top: 8px;
   max-width: min(48rem, 62vw);
 }
 
-.page-hero__eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 0 0 18px;
-  color: var(--accent);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
 
-.page-hero__rule {
-  display: block;
-  width: 34px;
-  height: 1px;
-  background: currentColor;
-  opacity: 0.7;
-}
 
 .page-hero h1 {
   margin: 0;

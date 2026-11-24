@@ -335,7 +335,7 @@ h1.blk-title, h2.blk-title { font-family: var(--font-display); font-size: clamp(
 .info-table .status { color: var(--accent2); font-weight: 600; }
 
 /* contact — 去盒子 */
-.contact-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--gap); background: none; border: 0; }
+.contact-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--gap); background: none; border: 0; align-items: stretch; }
 .panel { background: transparent; padding: clamp(20px, 2vw, 24px) 0 clamp(22px, 2vw, 26px); border-top: 1px solid var(--divider); }
 .panel .label { color: var(--muted); font-size: 12.5px; letter-spacing: .06em; }
 .panel h3 { margin: 8px 0 6px; font-size: 18px; color: var(--ink); word-break: break-all; }

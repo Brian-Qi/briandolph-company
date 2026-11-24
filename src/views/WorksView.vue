@@ -1,5 +1,5 @@
 <template>
-  <PageHero eyebrow="WORKS" effect="particles" light-image="/hero/page-works-light.webp" title="代表案例" subtitle="已上线的真实项目，点开查看详情。" />
+  <PageHero effect="particles" light-image="/hero/page-works-light.webp" title="代表案例" subtitle="已上线的真实项目。" />
 
   <section class="blk works-page">
     <div class="wrap">
@@ -27,7 +27,7 @@
       <div class="blk-head">
         <div>
           <h2 class="blk-title">在研 / 更多</h2>
-          <p class="lead">更多项目在研。想了解方向或直接合作，欢迎联系我们。</p>
+          <p class="lead">更多项目在研。</p>
         </div>
         <RouterLink class="btn ghost" to="/contact">联系我们</RouterLink>
       </div>

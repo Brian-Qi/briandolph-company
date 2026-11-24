@@ -1,5 +1,5 @@
 <template>
-  <PageHero eyebrow="CONTACT" effect="web-threads" light-image="/hero/page-contact-light.webp" title="联系我们" subtitle="无论是新项目立项还是合作洽谈，欢迎联系我们。" />
+  <PageHero effect="web-threads" light-image="/hero/page-contact-light.webp" title="联系我们" />
 
   <section class="blk">
     <div class="wrap">
@@ -11,7 +11,6 @@
             微信
           </div>
           <h3>{{ co.wechat }}</h3>
-          <p>添加时请简要说明来意。</p>
         </div>
         <a class="panel" :href="'mailto:' + co.email">
           <div class="label">
