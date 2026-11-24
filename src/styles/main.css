@@ -255,7 +255,10 @@ h1.blk-title, h2.blk-title { font-family: var(--font-display); font-size: clamp(
   min-height: calc(100dvh - var(--head-total));
   display: flex;
   flex-direction: column;
-  padding: clamp(40px, 5vw, 88px) 0;
+  /* 内容中心要对齐「整个视口」的中心，而不是 header 以下那块的center：
+     header 占了 61px，若按区域居中，内容在视口里会整体偏下半个 header。 */
+  padding-top: max(24px, calc(clamp(40px, 5vw, 88px) - var(--head-total) / 2));
+  padding-bottom: calc(clamp(40px, 5vw, 88px) + var(--head-total) / 2);
 }
 .blk-fill > .wrap {
   flex: 1 1 auto;
