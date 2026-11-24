@@ -59,6 +59,7 @@
 
   --maxw: min(1400px, 92vw);
   --radius: 4px;
+  --card-r: 12px;            /* 卡片圆角（与 4px 的界面语汇区分开） */
   --ease: cubic-bezier(.22, 1, .36, 1);
   /* 流体令牌：随视口平滑缩放（全分辨率通用） */
   --pad-x: clamp(20px, 4.5vw, 72px);
@@ -248,13 +249,14 @@ h1.blk-title, h2.blk-title { font-family: var(--font-display); font-size: clamp(
 .blk:last-child { border-bottom: 0; }
 
 /* 首页：整屏分区（与 hero 同高，滚动一步一屏） */
-.blk-fill { min-height: calc(100dvh - var(--head-h)); display: flex; align-items: center; padding: clamp(48px, 6vw, 72px) 0; }
+/* 滚动流：区块按内容自然伸展，不再一屏一块 */
+.blk-fill { display: block; padding: clamp(56px, 7vw, 104px) 0; }
 .blk-fill > .wrap { width: 100%; }
 
 /* home · 近期作品横排卡 */
-.work-strip { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(14px, 1.6vw, 20px); }
-.wcard { display: block; background: var(--surface); border: 1px solid var(--line); overflow: hidden; transition: border-color .2s ease, transform .2s ease; }
-.wcard:hover { border-color: var(--accent); transform: translateY(-2px); }
+.work-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: clamp(14px, 1.6vw, 22px); }
+.wcard { display: block; background: var(--surface); border: 1px solid var(--line); border-radius: var(--card-r); overflow: hidden; transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease; }
+.wcard:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 18px 40px -28px rgba(0, 0, 0, .95); }
 .wcard img { width: 100%; height: clamp(150px, 32vh, 380px); object-fit: cover; display: block; }
 .wcard .bd { padding: clamp(14px, 1.4vw, 20px) clamp(16px, 1.5vw, 20px) clamp(18px, 1.6vw, 22px); }
 .wcard h3 { margin: 0 0 6px; font-size: 18px; color: var(--ink); }
@@ -269,17 +271,31 @@ h1.blk-title, h2.blk-title { font-family: var(--font-display); font-size: clamp(
 .card:hover { background: transparent; }
 
 /* 首页 bento：把已有内容铺满一屏（Apple/Linear 式拼贴） */
-.bento { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: clamp(12px, 1.3vw, 18px); }
-.bento .tile { background: var(--surface); border: 1px solid var(--line); padding: clamp(18px, 1.8vw, 26px); display: flex; flex-direction: column; gap: 10px; min-height: clamp(150px, 22vh, 220px); }
+/* 卡片网格：两列等宽，取消原来的 6 栅格混排 */
+.bento { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(14px, 1.6vw, 22px); }
+.bento .tile {
+  grid-column: auto;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--card-r);
+  padding: clamp(20px, 2vw, 30px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  transition: border-color .22s var(--ease), transform .22s var(--ease), box-shadow .22s var(--ease);
+}
+.bento .tile:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px -28px rgba(0, 0, 0, .95);
+}
 .bento .tile:nth-child(2) { background: var(--surface-2); }
-.bento .tile:nth-child(1) { grid-column: span 3; }
-.bento .tile:nth-child(2) { grid-column: span 3; }
-.bento .tile:nth-child(3) { grid-column: span 2; }
-.bento .tile:nth-child(4) { grid-column: span 4; }
+/* 取消跨列：四张卡等宽（原 3+3 / 2+4 的混排在滚动流里会显乱） */
 .bento .tile h3 { margin: 0; font-size: clamp(17px, 1.15vw, 21px); color: var(--ink); }
 .bento .tile p { margin: 0; color: var(--ink2); font-size: 14.5px; line-height: 1.7; }
 .bento .tile-items { list-style: none; margin: auto 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
-.bento .tile-items li { border: 1px solid var(--line); color: var(--muted); font-size: 12.5px; line-height: 1; padding: 5px 10px; }
+.bento .tile-items li { border: 1px solid var(--line); border-radius: 6px; color: var(--muted); font-size: 12.5px; line-height: 1; padding: 5px 10px; }
 .wcard .tags { margin-top: 12px; }
 
 /* case — 大图出血 + 标题压图 + 下方两栏 */
@@ -298,7 +314,8 @@ h1.blk-title, h2.blk-title { font-family: var(--font-display); font-size: clamp(
 .shots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(8px, 1vw, 12px); margin-top: clamp(20px, 2.2vw, 26px); }
 .shots img { width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; object-position: top center; border: 1px solid var(--line); display: block; }
 .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px; }
-.tag { background: transparent; border: 1px solid var(--line); color: var(--ink2); font-size: 13px; padding: 5px 12px; }
+.tag {
+  border-radius: 6px; background: transparent; border: 1px solid var(--line); color: var(--ink2); font-size: 13px; padding: 5px 12px; }
 .side .row { padding: 14px 0; border-top: 1px solid var(--divider); font-size: 14px; color: var(--ink2); }
 .side .row span { color: var(--muted); display: block; font-size: 12.5px; margin-bottom: 3px; }
 .side .points { list-style: none; margin: 8px 0 0; padding: 0; }
@@ -313,11 +330,13 @@ h1.blk-title, h2.blk-title { font-family: var(--font-display); font-size: clamp(
 .step p { margin: 0; color: var(--muted); font-size: 14px; }
 
 /* cta band — 去渐变，改中性 */
-.cta-band {
-  color: var(--ink); padding: clamp(48px, 6vw, 72px) 0;
-  background: var(--bg2);
-  border-top: 1px solid var(--divider);
-  border-bottom: 1px solid var(--divider);
+/* CTA 从通栏色带改成一张卡片 */
+.cta-band { padding: clamp(32px, 4vw, 64px) 0; background: transparent; border: 0; }
+.cta-band > .wrap {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--card-r);
+  padding: clamp(28px, 3.4vw, 52px);
 }
 .cta-band .wrap { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
 .cta-band h2 { font-family: var(--font-display); font-weight: 900; color: var(--ink); margin: 0; font-size: clamp(22px, 0.9vw + 14px, 34px); }
@@ -421,7 +440,8 @@ h1.blk-title, h2.blk-title { font-family: var(--font-display); font-size: clamp(
 }
 
 @media (max-width: 480px) {
-  .tag { padding: 4px 8px; font-size: 12px; }
+  .tag {
+  border-radius: 6px; padding: 4px 8px; font-size: 12px; }
   .tags { gap: 6px; }
   .blk-title { font-size: clamp(24px, 6.6vw, 30px); }
   .lead { font-size: 15.5px; line-height: 1.85; }
@@ -542,3 +562,16 @@ html[data-theme="light"] .page-hero__light { display: block; }
   transition: background .16s ease, color .16s ease;
 }
 .avatar-menu .avatar-logout:hover { background: color-mix(in srgb, #ff6b6b 12%, transparent); color: #ff6b6b; }
+
+/* ===== 滚动卡片布局的响应式（2026-11-24）===== */
+@media (max-width: 1080px) {
+  .work-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 900px) {
+  .bento { grid-template-columns: 1fr; }
+  .blk-fill { padding: clamp(48px, 8vw, 80px) 0; }
+}
+@media (max-width: 680px) {
+  .work-strip { grid-template-columns: 1fr; }
+  .cta-band > .wrap { padding: 24px; }
+}
