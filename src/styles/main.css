@@ -250,7 +250,26 @@ h1.blk-title, h2.blk-title { font-family: var(--font-display); font-size: clamp(
 
 /* 首页：整屏分区（与 hero 同高，滚动一步一屏） */
 /* 内容区块不再强制一屏：原来 min-height:100dvh + align-items:center，导致每块上下各留 ~142px 空白，滚过满屏 Hero 后正对一条「线 + 大片空白」。Hero 仍然是 100dvh 霸屏，这里只让内容块按自身高度排。 */
-.blk-fill { padding: clamp(56px, 6.4vw, 96px) 0; }
+/* 每块撑满一屏（减去 header 实占位），内容自动铺开填满，不留上下大片空白 */
+.blk-fill {
+  min-height: calc(100dvh - var(--head-total));
+  display: flex;
+  flex-direction: column;
+  padding: clamp(40px, 5vw, 88px) 0;
+}
+.blk-fill > .wrap {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 0;
+}
+/* 卡片区在有富余高度时自动拉伸，把一屏填满 */
+.blk-fill .bento { flex: 1 1 auto; grid-auto-rows: 1fr; }
+.blk-fill .bento .tile { height: 100%; }
+.blk-fill .work-strip { flex: 1 1 auto; }
+.blk-fill .work-strip .wcard { height: 100%; display: flex; flex-direction: column; }
+.blk-fill .work-strip .wcard img { flex: 1 1 auto; height: auto; min-height: clamp(140px, 18vh, 340px); }
 .blk-fill > .wrap { width: 100%; }
 
 /* home · 近期作品横排卡 */
