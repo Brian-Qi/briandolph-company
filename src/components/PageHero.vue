@@ -171,7 +171,7 @@ onBeforeUnmount(() => {
   position: sticky;
   top: var(--head-h);
   z-index: 0;
-  min-height: calc(100dvh - var(--head-h) - 80px);
+  min-height: calc(100dvh - var(--head-h));
   opacity: calc(1 - var(--hero-p, 0) * 0.55);
   transform: scale(calc(1 + var(--hero-p, 0) * 0.02));
   transform-origin: 50% 35%;
@@ -185,6 +185,8 @@ onBeforeUnmount(() => {
   user-select: none;
   -webkit-user-select: none;
 }
+/* Hero 必须是整屏（霸屏）：min-height 只减页头高度。
+   曾试过再减 80px 让下一区块首行露出，观感直接垮掉，已回退。 */
 /* 内页 hero 的图和字不参与选中/拖拽 */
 .page-hero img { -webkit-user-drag: none; user-drag: none; }
 
@@ -235,7 +237,7 @@ onBeforeUnmount(() => {
 .page-hero__inner {
   position: relative;
   z-index: 1;
-  min-height: calc(100dvh - var(--head-h) - 80px);
+  min-height: calc(100dvh - var(--head-h));
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: end;
