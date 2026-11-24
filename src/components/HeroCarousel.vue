@@ -233,9 +233,8 @@ onBeforeUnmount(() => {
 <style scoped>
 .hero {
   position: relative;
-  /* 滚动式：Hero 不再占满一屏，首屏底部留出下一区块 */
-  height: clamp(520px, 74dvh, 860px);
-  min-height: 0;
+  height: calc(100dvh - var(--head-h));
+  min-height: 560px;
   overflow: hidden;
   background: var(--bg);
   border-bottom: 1px solid var(--divider);
@@ -425,8 +424,8 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 900px) {
-  /* 滚动式：手机上 hero 也不占满一屏，底部留出下一区块，特效仍然铺满 hero 区域 */
-  .hero { height: clamp(460px, 66svh, 680px); min-height: 0; }
+  /* 手机上 hero 占满一屏（减掉页头），特效铺满整屏 */
+  .hero { height: calc(100svh - var(--head-h)); min-height: 520px; }
   /* 窄屏地形线更稀，提亮补偿，保证特效仍看得见 */
   .hero-bg { opacity: 0.8; }
   /* 手机不加载 topography（要 256KB 的 vendor），用渐变托底，避免满屏一片纯黑 */
