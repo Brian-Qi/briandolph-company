@@ -169,9 +169,9 @@ onBeforeUnmount(() => {
 <style scoped>
 .page-hero {
   position: sticky;
-  top: var(--head-h);
+  top: var(--head-total);
   z-index: 0;
-  min-height: calc(100dvh - var(--head-h));
+  min-height: calc(100dvh - var(--head-total));
   opacity: calc(1 - var(--hero-p, 0) * 0.55);
   transform: scale(calc(1 + var(--hero-p, 0) * 0.02));
   transform-origin: 50% 35%;
@@ -237,7 +237,7 @@ onBeforeUnmount(() => {
 .page-hero__inner {
   position: relative;
   z-index: 1;
-  min-height: calc(100dvh - var(--head-h));
+  min-height: calc(100dvh - var(--head-total));
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: end;
@@ -285,13 +285,13 @@ onBeforeUnmount(() => {
 @media (max-width: 900px) {
   /* 手机上内页 hero 占满一屏（减掉页头），内容居中，特效整个铺满 */
   .page-hero {
-    min-height: calc(100svh - var(--head-h));
+    min-height: calc(100svh - var(--head-total));
   }
 
   .page-hero__inner {
     display: flex;
     align-items: center;
-    min-height: calc(100svh - var(--head-h));
+    min-height: calc(100svh - var(--head-total));
     padding-top: clamp(64px, 10vh, 110px);
     padding-bottom: clamp(72px, 12vh, 130px);
   }

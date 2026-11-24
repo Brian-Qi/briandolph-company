@@ -21,7 +21,9 @@ if (canReveal) {
         }
       }
     },
-    { threshold: 0, rootMargin: '0px 0px -12% 0px' }
+    // 原来底部收缩 12%：元素要滚进视口约 108px 才开始显现，那一段就是肉眼看到的「空白缝」。
+    // 改成底部外扩 8%：元素还在视口外就已显现，滚到时已经就位，衔接无缝。
+    { threshold: 0, rootMargin: '0px 0px 8% 0px' }
   )
 }
 
