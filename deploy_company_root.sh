@@ -15,6 +15,12 @@ if tar tzf /root/company_dist.tgz | grep -qE '^\./(self|arg_01)/'; then
   echo "ERR: 包里带子站目录，拒绝部署"
   exit 1
 fi
+# 防误部署：生产机只放构建产物，出现源码/依赖标志说明传错了东西
+if tar tzf /root/company_dist.tgz | grep -qE '^\./(src|node_modules|package\.json|package-lock\.json|vite\.config\.js|\.git)(/|$)'; then
+  echo "ERR: 包里带源码或依赖标志，拒绝部署（生产机只接受 dist 构建产物）"
+  echo "     如果这是要部署源码，请改用开发机（47.113.229.68）的 /srv/code"
+  exit 1
+fi
 
 TS=$(date +%Y%m%d_%H%M%S)
 tar czf /root/company_backup_$TS.tgz -C "$ROOT" . 2>/dev/null || true

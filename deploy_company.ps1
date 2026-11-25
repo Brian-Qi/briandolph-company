@@ -75,6 +75,13 @@ foreach ($p in @($Tgz, $ServerScript, $Key)) {
 
 $opts = @('-i', $Key, '-o', 'IdentitiesOnly=yes', '-o', 'StrictHostKeyChecking=accept-new')
 
+# ---------- 上传前自检：生产机只接受构建产物 ----------
+$names = & tar tzf $Tgz
+$leak = $names | Where-Object { $_ -match '^\./(src|node_modules|package\.json|package-lock\.json|vite\.config\.js|\.git)(/|$)' }
+if ($leak) {
+  throw ("产物包里混入源码/依赖标志，拒绝上传到生产机：" + ($leak -join ', ') + "`n生产机 47.118.16.92 只放 dist；源码去开发机 47.113.229.68")
+}
+
 Write-Host "[3/4] 上传产物与服务器脚本 (target=$Target) ..."
 & scp @opts $Tgz "${User}@${HostName}:/root/company_dist.tgz"
 if ($LASTEXITCODE -ne 0) { throw '上传产物失败' }
