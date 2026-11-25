@@ -87,6 +87,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { useSnapToContent } from '../composables/useSnapToContent.js'
 import HeroStrokeNumber from './HeroStrokeNumber.vue'
 import HeroTechNumber from './HeroTechNumber.vue'
 
@@ -212,6 +213,10 @@ function onPointerLeave() {
   nearPrev.value = false
   nearNext.value = false
 }
+
+// 首页原来没有滚动吸附（只有内页 PageHero 有），滚到哪算哪，内容看着就偏下。
+// 这里接上与内页同一套：向下一次送到内容块顶部、向上在边界附近拉回 hero 顶部。
+useSnapToContent('.hero', '.hero + .blk')
 
 onMounted(() => {
   themeObserver = new MutationObserver(() => {
